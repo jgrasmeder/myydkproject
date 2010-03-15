@@ -124,6 +124,9 @@
 	<bean id="bookDbMngr" class="com.ydk.book.persistence.BookDbMngrImpl"/>
 	<bean id="keyManager" class = "com.ydk.web.KeyManager"/>
 	<bean id="searchManager" class = "com.ydk.search.SimpleSearchManager"/>
+	<bean id="authorDbMngr" class="com.ydk.book.persistence.AuthorDbMngrImpl"/>
+	<bean id="translatorDbMngr" class="com.ydk.book.persistence.TranslatorDbMngrImpl"/>
+	<bean id="publisherDbMngr" class="com.ydk.book.persistence.PublisherDbMngrImpl"/>
 	
 	
 	<!-- MailSender implementation for JavaMail -->
