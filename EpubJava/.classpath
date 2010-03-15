@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="lib/lucene-core-3.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/mmseg4j-analysis-1.8.2-lucene3.jar"/>
+	<classpathentry kind="lib" path="lib/mmseg4j-core-1.8.2-with-dic.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="2.0" unique-identifier="PrimaryID" xmlns="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:title>还珠格格</dc:title>
+    <dc:creator opf:role="aut">张爱玲</dc:creator>
+    <dc:identifier opf:scheme="URN" id="PrimaryID">urn:uuid:0928959F-48FF-0166-6E76-57BAF4E44D3F</dc:identifier>
+    <dc:contributor>张爱玲</dc:contributor>
+    <dc:coverage/>
+    <dc:description/>
+    <dc:format>16K</dc:format>
+    <dc:language>zh-CN</dc:language>
+    <dc:date opf:event="original-publication">2009.3.13</dc:date>
+    <dc:date opf:event="ops-publication">2010.03.13 9:38:27-156 PM</dc:date>
+    <dc:publisher>中国旅游出版社</dc:publisher>
+    <dc:relation/>
+    <dc:rights>阅读客版权所，2010</dc:rights>
+    <dc:source>由阅读客EPubMaker制作</dc:source>
+    <dc:identifier opf:scheme="URI">0928959F-48FF-0166-6E76-57BAF4E44D3F</dc:identifier>
+    <meta name="ydkbookname" content="还珠格格"/>
+    <meta name="ydkbookisbn" content="111-111-111-111"/>
+    <meta name="ydkauthor" content="张爱玲"/>
+    <meta name="ydkauthor" content="张爱玲"/>
+    <meta name="ydkauthor" content="张恨水"/>
+    <meta name="ydkauthor" content="张恨水"/>
+    <meta name="ydkauthor" content=""/>
+    <meta name="ydktranslator" content="张恨水"/>
+    <meta name="ydktranslator" content="王小波"/>
+    <meta name="ydktranslator" content="张爱玲"/>
+    <meta name="ydktranslator" content="张恨水"/>
+    <meta name="ydktranslator" content=""/>
+    <meta name="ydkbooklayout" content="good"/>
+    <meta name="ydkbookformat" content="16K"/>
+    <meta name="ydkbookpages" content="10"/>
+    <meta name="ydkpapercopyprice" content="20.00"/>
+    <meta name="ydkthumbnail3dbig" content="images/3db.jpg"/>
+    <meta name="ydkthumbnail3dsmall" content="images/3ds.jpg"/>
+    <meta name="ydkthumbnailsmall" content="images/s.jpg"/>
+    <meta name="ydkthumbnailbig" content="images/b.jpg"/>
+  </metadata>
+  <manifest>
+    <item id="image3db" href="images/3db.jpg" media-type="image/jpeg"/>
+    <item id="image3ds" href="images/3ds.jpg" media-type="image/jpeg"/>
+    <item id="images" href="images/s.jpg" media-type="image/jpeg"/>
+    <item id="imageb" href="images/b.jpg" media-type="image/jpeg"/>
+    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_1" href="content_1_1.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_2" href="content_1_2.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_3" href="content_1_3.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_4" href="content_1_4.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_5" href="content_1_5.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_6" href="content_1_6.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_7" href="content_1_7.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_8" href="content_1_8.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_9" href="content_1_9.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_10" href="content_1_10.xhtml" media-type="application/xhtml+xml"/>
+    <item id="content_1_11" href="content_1_11.xhtml" media-type="application/xhtml+xml"/>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+  </manifest>
+  <spine toc="ncx">
+    <itemref idref="cover" linear="yes"/>
+    <itemref idref="content_1_1" linear="yes"/>
+    <itemref idref="content_1_2" linear="yes"/>
+    <itemref idref="content_1_3" linear="yes"/>
+    <itemref idref="content_1_4" linear="yes"/>
+    <itemref idref="content_1_5" linear="yes"/>
+    <itemref idref="content_1_6" linear="yes"/>
+    <itemref idref="content_1_7" linear="yes"/>
+    <itemref idref="content_1_8" linear="yes"/>
+    <itemref idref="content_1_9" linear="yes"/>
+    <itemref idref="content_1_10" linear="yes"/>
+    <itemref idref="content_1_11" linear="yes"/>
+  </spine>
+</package>
