@@ -1,0 +1,55 @@
+﻿/* CSS Document */
+
+.menubox{ /* menu holder*/
+margin: 0;
+padding: 0;
+width:210px;
+max-width:210px;
+
+}
+
+.submenubox{ /*Style for submenu*/
+margin: 0;
+padding: 0;
+
+
+}
+.submenubar{ /*Style for submenu*/
+background-image: url(images/sub_menu_coll.gif);
+background-repeat:no-repeat;
+height:32px;
+max-height:32px;
+display :block;
+}
+.menuitem{ /* Style for menuitem */
+background: white url(images/left_sub_menu_padding_bk.jpg) no-repeat left center;
+cursor: hand !important;
+cursor: pointer !important;
+display:none;
+font-weight:normal;
+}
+.menuitem-active{ /* Style for menuitem */
+background: white url(images/left_sub_menu_padding_bk_active.jpg) no-repeat left center;
+cursor: hand !important;
+cursor: pointer !important;
+display:none;
+font-weight:bold;
+}
+
+.menuitemtext{
+font-size:13px;
+padding-left: 46px;
+padding-top:9px;
+height:24px;
+max-height:24px;
+color:#085fa2;
+cursor:pointer;
+cursor:hand !important;
+}
+.submenutext{
+	padding-left: 36px;
+	padding-top: 8px;
+	font-size:13px;
+	color:#085fa2;
+	cursor:pointer;
+}

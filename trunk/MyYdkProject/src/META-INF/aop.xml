@@ -1,0 +1,13 @@
+<aspectj>
+	<aspects>
+	    <concrete-aspect name="com.ydk.aspects.ApplicationTraceAspect" 
+	    				 extends="com.ydk.aspects.AbstractTraceAspect">
+	    	<pointcut name="traced"
+	    		      expression="execution(* com.ydk..*.*(..))"/>
+	    </concrete-aspect>	    
+	</aspects>
+	
+	<weaver>                   
+	    <include within="com.ydk..*"/>
+	</weaver>
+</aspectj>

@@ -1,0 +1,1219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Application context definition for MyYdkProject on JPA.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:cxf="http://cxf.apache.org/core"
+    	xmlns:jaxws="http://cxf.apache.org/jaxws"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+			http://cxf.apache.org/core
+	        http://cxf.apache.org/schemas/core.xsd
+	        http://cxf.apache.org/jaxws
+	        http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+    <!-- Load CXF modules from cxf.jar -->
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+    
+    <!-- Enable message logging using the CXF logging feature -->
+    <cxf:bus>
+        <cxf:features>
+            <!-- <cxf:logging/> -->
+        </cxf:features>
+    </cxf:bus>
+    
+    
+    
+    
+    <!-- Aegis data binding -->
+    <bean id="aegisBean"
+        class="org.apache.cxf.aegis.databinding.AegisDatabinding"
+        scope="prototype"/> 
+        
+    <bean id="jaxws-and-aegis-service-factory"
+        class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean"
+        scope="prototype">
+        <property name="dataBinding" ref="aegisBean"/>
+        <property name="serviceConfigurations">
+            <list>
+              <bean class="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration"/>
+              <bean class="org.apache.cxf.aegis.databinding.AegisServiceConfiguration"/>
+              <bean class="org.apache.cxf.service.factory.DefaultServiceConfiguration"/> 
+            </list>
+        </property>
+    </bean>
+    
+    
+    
+    <!-- The service bean -->
+    
+ 	<!-- Contact Us Web Service -->
+    <!-- Server end-->
+    <bean id="contactUsServiceImpl" class="com.ydk.webservice.contactus.ContactUsServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+    <jaxws:endpoint id="contactUsService"
+            implementorClass="com.ydk.webservice.contactus.ContactUsServiceImpl"
+            implementor="#contactUsServiceImpl"
+            address="/contactus">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+    <bean id="contactUsFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.webservice.contactus.ContactUsService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/contactus"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="contactUsServiceClient"
+          class="com.ydk.webservice.contactus.ContactUsService"
+          factory-bean="contactUsFactory"
+          factory-method="create"/>
+    <!--End of  Clinet end -->
+    
+    <!--End of Contact Us Web Service -->
+    
+    
+    <!-- Ydk Account Web Service -->
+    <!-- Server end-->
+    <bean id="ydkAccountServiceImpl" class="com.ydk.account.webservice.YdkAccountServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	<bean id="serverPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    <jaxws:endpoint id="ydkAccountService"
+            implementorClass="com.ydk.account.webservice.YdkAccountServiceImpl"
+            implementor="#ydkAccountServiceImpl"
+            address="/account">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+	   -->
+	  
+   
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientPasswordCallback" 
+    	class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication 
+	    <jaxws:outInterceptors> -->
+	      <bean id="accountOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="user" value="joe"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="clientPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	<!--  
+	   </jaxws:outInterceptors>
+	-->
+    <bean id="ydkAccountFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkAccountService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/account"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="accountOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkAccountServiceClient"
+          class="com.ydk.account.webservice.YdkAccountService"
+          factory-bean="ydkAccountFactory"
+          factory-method="create">
+         
+   
+   		<!--End of JAXWS authentication -->
+          
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End ofYdk Account Web Service -->
+    
+    <!-- Ydk Book Web Service -->
+    <!-- Server end-->
+    <bean id="ydkBookServiceImpl" class="com.ydk.book.webservice.YdkBookServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverBookPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkBookService"
+            implementorClass="com.ydk.book.webservice.YdkBookServiceImpl"
+            implementor="#ydkBookServiceImpl"
+            address="/book">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverBookPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientBookPasswordCallback" 
+    	class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="bookOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientBookPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkBookFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkBookService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/book"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="bookOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkBookServiceClient"
+          class="com.ydk.book.webservice.YdkBookService"
+          factory-bean="ydkBookFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End ofYdk Account Web Service -->
+    
+    
+    
+    <!-- Ydk Book Free Web Service -->
+    <!-- Server end-->
+    <bean id="ydkBookFreeServiceImpl" class="com.ydk.book.webservice.YdkBookFreeServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverBookFreePasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkBookFreeService"
+            implementorClass="com.ydk.book.webservice.YdkBookFreeServiceImpl"
+            implementor="#ydkBookFreeServiceImpl"
+            address="/bookFree">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverBookFreePasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientBookFreePasswordCallback" 
+    	class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="bookFreeOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientBookFreePasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkBookFreeFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkBookFreeService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/bookFree"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="bookFreeOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkBookFreeServiceClient"
+          class="com.ydk.book.webservice.YdkBookFreeService"
+          factory-bean="ydkBookFreeFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk Book Free Web Service -->
+    
+    
+    <!-- Ydk Subject Web Service -->
+    <!-- Server end-->
+    <bean id="ydkSubjectServiceImpl" class="com.ydk.book.webservice.YdkSubjectServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverSubjectPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkSubjectService"
+            implementorClass="com.ydk.book.webservice.YdkSubjectServiceImpl"
+            implementor="#ydkSubjectServiceImpl"
+            address="/ydkSubject">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverSubjectPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientSubjectPasswordCallback" 
+    	class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="subjectOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientSubjectPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkSubjectFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkSubjectService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkSubject"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="subjectOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkSubjectServiceClient"
+          class="com.ydk.book.webservice.YdkSubjectService"
+          factory-bean="ydkSubjectFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk Subject Web Service -->
+    
+    
+    <!-- Ydk FrontEnd Web Service -->
+    <!-- Server end-->
+    <bean id="ydkFrontEndWebServiceImpl" class="com.ydk.book.webservice.YdkFrontEndWebServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverFrontEndPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkFrontEndWebService"
+            implementorClass="com.ydk.book.webservice.YdkFrontEndWebServiceImpl"
+            implementor="#ydkFrontEndWebServiceImpl"
+            address="/ydkFrontEnd">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverFrontEndPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientFrontEndPasswordCallback" 
+    	class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="FrontEndOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientFrontEndPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkFrontEndFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkFrontEndWebService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkFrontEnd"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="FrontEndOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkFrontEndServiceClient"
+          class="com.ydk.book.webservice.YdkFrontEndWebService"
+          factory-bean="ydkFrontEndFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk FrontEnd Web Service -->
+    
+    
+    <!-- Ydk SubjectMngr Web Service -->
+    <!-- Server end-->
+    <bean id="ydkSubjectMngrServiceImpl" class="com.ydk.account.webservice.YdkSubjectMngrServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverSubjectMngrPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkSubjectMngrService"
+            implementorClass="com.ydk.account.webservice.YdkSubjectMngrServiceImpl"
+            implementor="#ydkSubjectMngrServiceImpl"
+            address="/ydkSubjectMngr">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverSubjectMngrPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientSubjectMngrPasswordCallback" 
+    	class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="SubjectMngrOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientSubjectMngrPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkSubjectMngrFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkSubjectMngrService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkSubjectMngr"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="SubjectMngrOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkSubjectMngrServiceClient"
+          class="com.ydk.account.webservice.YdkSubjectMngrService"
+          factory-bean="ydkSubjectMngrFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk SubjectMngr Web Service -->
+    
+    
+    <!-- Ydk PartnerMngr Web Service -->
+    <!-- Server end-->
+    <bean id="ydkPartnerMngrServiceImpl" class="com.ydk.account.webservice.YdkPartnerMngrServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverPartnerMngrPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkPartnerMngrService"
+            implementorClass="com.ydk.account.webservice.YdkPartnerMngrServiceImpl"
+            implementor="#ydkPartnerMngrServiceImpl"
+            address="/ydkPartnerMngr">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverPartnerMngrPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientPartnerMngrPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="PartnerMngrOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientPartnerMngrPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkPartnerMngrFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkPartnerMngrService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkPartnerMngr"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="PartnerMngrOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkPartnerMngrServiceClient"
+          class="com.ydk.account.webservice.YdkPartnerMngrService"
+          factory-bean="ydkPartnerMngrFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk PartnerMngr Web Service -->
+    
+    
+    <!-- Ydk AccountMngr Web Service -->
+    <!-- Server end-->
+    <bean id="ydkAccountMngrServiceImpl" class="com.ydk.account.webservice.YdkAccountMngrServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverAccountMngrPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkAccountMngrService"
+            implementorClass="com.ydk.account.webservice.YdkAccountMngrServiceImpl"
+            implementor="#ydkAccountMngrServiceImpl"
+            address="/ydkAccountMngr">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverAccountMngrPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientAccountMngrPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="AccountMngrOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientAccountMngrPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkAccountMngrFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkAccountMngrService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkAccountMngr"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="AccountMngrOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkAccountMngrServiceClient"
+          class="com.ydk.account.webservice.YdkAccountMngrService"
+          factory-bean="ydkAccountMngrFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk AccountMngr Web Service -->
+    
+    
+    <!-- Ydk BookMngr Web Service -->
+    <!-- Server end-->
+    <bean id="ydkBookMngrServiceImpl" class="com.ydk.account.webservice.YdkBookMngrServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverBookMngrPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkBookMngrService"
+            implementorClass="com.ydk.account.webservice.YdkBookMngrServiceImpl"
+            implementor="#ydkBookMngrServiceImpl"
+            address="/ydkBookMngr">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverBookMngrPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientBookMngrPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="BookMngrOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientBookMngrPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkBookMngrFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkBookMngrService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkBookMngr"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="BookMngrOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkBookMngrServiceClient"
+          class="com.ydk.account.webservice.YdkBookMngrService"
+          factory-bean="ydkBookMngrFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk BookMngr Web Service -->
+    
+    
+    <!-- Ydk BusiQuery Web Service -->
+    <!-- Server end-->
+    <bean id="ydkBusiQueryServiceImpl" class="com.ydk.account.webservice.YdkBusiQueryServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverBusiQueryPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkBusiQueryService"
+            implementorClass="com.ydk.account.webservice.YdkBusiQueryServiceImpl"
+            implementor="#ydkBusiQueryServiceImpl"
+            address="/ydkBusiQuery">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverBusiQueryPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientBusiQueryPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="BusiQueryOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientBusiQueryPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkBusiQueryFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkBusiQueryService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkBusiQuery"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="BusiQueryOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkBusiQueryServiceClient"
+          class="com.ydk.account.webservice.YdkBusiQueryService"
+          factory-bean="ydkBusiQueryFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk BusiQuery Web Service -->
+    
+    
+    <!-- Ydk TransactionMngr Web Service -->
+    <!-- Server end-->
+    <bean id="ydkTransactionMngrServiceImpl" class="com.ydk.account.webservice.YdkTransactionMngrServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverTransactionMngrPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkTransactionMngrService"
+            implementorClass="com.ydk.account.webservice.YdkTransactionMngrServiceImpl"
+            implementor="#ydkTransactionMngrServiceImpl"
+            address="/ydkTransactionMngr">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverBusiQueryPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientTransactionMngrPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="TransactionMngrOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientBusiQueryPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkTransactionMngrFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.account.webservice.YdkTransactionMngrService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkTransactionMngr"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <property name="outInterceptors" ref="TransactionMngrOutInterceptor" />
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkTransactionMngrServiceClient"
+          class="com.ydk.account.webservice.YdkTransactionMngrService"
+          factory-bean="ydkTransactionMngrFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk BusiQuery Web Service -->
+    
+        <!-- Ydk Author Web Service -->
+    <!-- Server end-->
+    <bean id="ydkAuthorServiceImpl" class="com.ydk.book.webservice.YdkAuthorServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverAuthorPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkAuthorService"
+            implementorClass="com.ydk.book.webservice.YdkAuthorServiceImpl"
+            implementor="#ydkAuthorServiceImpl"
+            address="/ydkAuthor">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+    	<!--  
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverAuthorPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+	   -->
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientAuthorPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="AuthorOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientAuthorPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkAuthorFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkAuthorService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkAuthor"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <!--  
+        <property name="outInterceptors" ref="AuthorOutInterceptor" />
+        -->
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkAuthorServiceClient"
+          class="com.ydk.book.webservice.YdkAuthorService"
+          factory-bean="ydkAuthorFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk Author Web Service -->
+    
+    
+     <!-- Ydk Translator Web Service -->
+    <!-- Server end-->
+    <bean id="ydkTranslatorServiceImpl" class="com.ydk.book.webservice.YdkTranslatorServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverTranslatorPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkTranslatorService"
+            implementorClass="com.ydk.book.webservice.YdkTranslatorServiceImpl"
+            implementor="#ydkTranslatorServiceImpl"
+            address="/ydkTranslator">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+    	<!--  
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverTranslatorPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+	   -->
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientTranslatorPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="TranslatorOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientTranslatorPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkTranslatorFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkTranslatorService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkTranslator"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <!--  
+        <property name="outInterceptors" ref="TranslatorOutInterceptor" />
+        -->
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkTranslatorServiceClient"
+          class="com.ydk.book.webservice.YdkTranslatorService"
+          factory-bean="ydkTranslatorFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk Translator Web Service -->
+
+
+
+<!-- Ydk Publisher Web Service -->
+    <!-- Server end-->
+    <bean id="ydkPublisherServiceImpl" class="com.ydk.book.webservice.YdkPublisherServiceImpl"/>
+    <!-- Service endpoint -->
+    <!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
+   	
+   	<bean id="serverPublisherPasswordCallback" 
+    	class="com.ydk.account.webservice.ServerPasswordCallback"/> 
+    
+    <jaxws:endpoint id="ydkPublisherService"
+            implementorClass="com.ydk.book.webservice.YdkPublisherServiceImpl"
+            implementor="#ydkPublisherServiceImpl"
+            address="/ydkPublisher">
+        <jaxws:properties>
+      		<entry key="mtom-enabled" value="true"/>
+   		</jaxws:properties>
+        <jaxws:serviceFactory>
+            <ref bean="jaxws-and-aegis-service-factory"/>
+        </jaxws:serviceFactory>
+        <!-- SAAJ Interceptor needs to be explicitly declared only in CXF 2.0.x-->
+    	<!-- JAXWS authentication  -->
+    	<!--  
+	    <jaxws:inInterceptors>
+	      <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	         <constructor-arg>
+	            <map>
+	               <entry key="action" value="UsernameToken"/>
+	               <entry key="passwordType" value="PasswordText"/>
+	               <entry key="passwordCallbackRef">
+	                  <ref bean="serverPublisherPasswordCallback"/>
+	               </entry>
+	            </map>
+	         </constructor-arg>
+	      </bean>
+	   </jaxws:inInterceptors>
+	   -->
+   		<!--End of JAXWS authentication -->
+    </jaxws:endpoint>
+    <!-- End of Server end-->
+    
+    
+    <!-- Clinet end -->
+	<!-- Factory to create the dynamic proxy -->
+	<bean id="clientPublisherPasswordCallback" class="com.ydk.account.webservice.ClientPasswordCallback"/> 
+    <!-- JAXWS authentication -->
+
+    <bean id="PublisherOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+       <constructor-arg>
+          <map>
+             <entry key="action" value="UsernameToken"/>
+             <entry key="user" value="joe"/>
+             <entry key="passwordType" value="PasswordText"/>
+             <entry key="passwordCallbackRef">
+                <ref bean="clientPublisherPasswordCallback"/>
+             </entry>
+          </map>
+       </constructor-arg>
+    </bean>
+
+    <bean id="ydkPublisherFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.ydk.book.webservice.YdkPublisherService"/>
+        <property name="address"
+                  value="http://localhost:8080/MyYdkProject/webservice/ydkPublisher"/>
+        <property name="serviceFactory" ref="jaxws-and-aegis-service-factory"/>
+        <!--  
+        <property name="outInterceptors" ref="PublisherOutInterceptor" />
+        -->
+    </bean>
+    
+    <!-- Web service dynamic proxy -->
+    <bean id="ydkPublisherServiceClient"
+          class="com.ydk.book.webservice.YdkPublisherService"
+          factory-bean="ydkPublisherFactory"
+          factory-method="create">
+         
+   		<!--End of JAXWS authentication -->
+    </bean>
+    <!--End of  Clinet end -->
+    
+    <!--End of Ydk Publisher Web Service -->
+    
+    
+    
+    
+    
+    
+    
+    
+
+</beans>
