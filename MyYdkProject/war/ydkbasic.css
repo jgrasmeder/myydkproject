@@ -1,0 +1,149 @@
+﻿.top_left_menu_cell {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: #FFFFFF;
+	text-align: center;
+	width: 100px;
+	cursor: pointer !important;
+	cursor: hand !important;
+	margin: 0px;
+}
+
+.top_menu_padding_cell {
+	width: auto;
+	height: 35px;
+}
+
+
+.top_right_menu_cell {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: #FFFFFF;
+	text-align: center;
+	width: 80px;
+	cursor: pointer !important;
+	cursor: hand !important;
+}
+
+body {
+	background-color: #C9E7E6;
+	/*height: 100%;*/
+	width: 96%;
+	padding-left:10px;
+	padding-right:10px;
+
+	
+	
+/*	background-image: url(images/mainframe_body_bk.jpg);
+	background-repeat: repeat-x;*/
+}
+
+
+.top_menu_bar {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	background-image: url(images/top_menu_background.jpg);
+	background-repeat: repeat-x;
+	background-position: center bottom;
+	padding: 0px;
+	margin: 0px;
+	height: 35px;
+}
+
+.bottom_line {
+	background-image: url(images/bottom_line.jpg);
+	background-repeat: repeat-x;
+	height: 12px;
+	/*outline: groove 2px blue;*/
+}
+
+
+.top_title {
+	font-family: "微软雅黑", "黑体", "楷体", "宋体";
+	font-size: 35px;
+	color: #330099;
+	padding:0px;
+	margin:0px;
+	height: 60px;
+	vertical-align:middle;
+	text-indent: 0px;
+	text-align: center;
+
+}
+
+.left_menu_layout_bg {
+	width: 210px;
+	vertical-align: top;
+}
+#content-td {
+/*	min-height:400px !important;
+	height:400px;
+	overflow:visible;*/
+	padding:0px;
+	margin:0px;
+	vertical-align:top;
+	/*outline:dashed 2px red;*/
+}
+#content-frame {
+	/*margin : 5px;*/
+	min-height:480px !important;
+	_height:480px;
+/*	height: 100%;*/
+	/*border:1px solid blue;*/
+	overflow:auto;
+	
+	
+}
+.padding-row-under-top-menu-bar{
+	_height:12px;
+	height:12px;
+	font-size:9px;
+	padding:0px;
+	margin:0px;
+}
+#main-layout-table{
+text-align:left;
+padding:0px;
+margin:0px;
+vertical-align:top;
+border:1px;
+min-width: 800px; 
+align: center;
+/*_width:800px;*/
+
+}
+.layout-td{
+text-align:left;
+padding:0px;
+margin:0px;
+vertical-align:top;
+border:0px;
+
+}
+
+#center-layout-table{
+padding:0px;
+ margin:0px; 
+
+}
+#top-menu-bar-layout-table{
+ padding:0px;
+ margin:0px; 
+}
+.top-left-menu-active{
+background-image:url(images/active_top_left_menu_bk.jpg);
+background-repeat:no-repeat;
+color:#FF0000; 
+
+}
+.top-left-menu-inactive{
+background-image:;
+
+color:#FFFFFF; 
+}
+.noscript{
+font-size:x-large;
+color:#FF0000;
+}
+

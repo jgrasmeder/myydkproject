@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>阅读客综合管理系统</title>
+<link rel="stylesheet" type="text/css" href="left_menu.css" charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="ydkbasic.css" charset="utf-8" />
+<style type="text/css">
+</style>
+<script language="javascript" type="text/javascript" src="menu.js" charset="utf-8">
+/*** 
+	for left side tree menu
+	
+**/
+
+</script>
+<script language="JavaScript" type="text/javascript" src="basicframe.js" charset="utf-8" >
+
+</script>
+<noscript><span class="noscript">当前浏览器不支持 JavaScript, 或是禁止了脚本的运行，本系统将无法正常工作！<br />Your browser doesn't support JavaScript, or you disabled it. The tool cannot run properly! </span></noscript>
+</head>
+<body>
+<table
+	width="100%" height="100%" border="0" align="center" cellpadding="0" cellspacing="0" id="main-layout-table" >
+	<tr>
+		<td  class="layout-td"  >
+		<table id="top-title-layout-table" align="left" border="0"
+			cellpadding="0" cellspacing="0" >
+			<tr>
+				<td class="top_title" ><img name="logo" src="images/ydk_logo.gif" 
+					border="0" id="ydk_logo" alt="阅读客" /></td>
+				<td  class="top_title" width="90%">
+				综 合 管 理 平 台
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+
+
+	<tr>
+		<td class="layout-td"  >
+		<table id="top-menu-bar-layout-table" align="left" border="0"
+			cellpadding="0" cellspacing="0" width="100%" >
+			<tr class="top_menu_bar">
+				<td width="18"></td>
+				<td class="top_left_menu_cell top-left-menu-active" id="menu_resource_manage"
+					onclick="topLeftMenuClick(this);" menu="resource_manage_menu">
+				资源管理</td>
+				<td class="top_left_menu_cell" id="menu_business_manage"
+					onclick="topLeftMenuClick(this);" menu="business_manage_menu">
+				业务管理</td>
+				<td class="top_left_menu_cell" id="menu_system_manage"
+					onclick="topLeftMenuClick(this);" menu="system_manage_menu">系统管理</td>
+				<td class="top_menu_padding_cell">&nbsp;</td>
+				<td class="top_right_menu_cell" id="menu_resource_manage"
+					onclick="topRightMenuClick(this);menuManager.callPage('first_page.html');">首页</td>
+				<td class="top_right_menu_cell" id="menu_business_manage"
+					onclick="topRightMenuClick(this);menuManager.callPage('change_admin_password.html');">修改口令</td>
+				<td class="top_right_menu_cell" id="menu_system_manage"
+					onclick="topRightMenuClick(this); addBookPage();">退出</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+<tr>
+		<td class="padding-row-under-top-menu-bar" height="12"  >&nbsp;
+		</td>
+  </tr>
+	<tr>
+		<td  class="layout-td" height="200" >
+		<table id="center-layout-table" align="left" border="0"
+			cellpadding="0" cellspacing="0" width="100%"  >
+			<tr>
+
+				<td class="left_menu_layout_bg" id="left_menu_area">
+				<menu id="businessmenu" menuid="business_manage_menu"
+					style="display: none" active="false">
+					<ul menuid="partner_management_menu" name="合作伙伴管理">
+						<li menuid="partner_management_create_account" name="新建账号"
+							action="partner_create.html" />
+						</li>
+						<li menuid="partner_management_modify_account" name="修改账号"
+							action="partner_modify.html" />
+						</li>
+						<li menuid="partner_management_delete_account" name="删除账号"
+							action="partner_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="partner_management_menu" name="合作授权">
+						<li menuid="partner_management_book_authorize" name="书籍授权"
+							action="book_authorize.html" />
+						</li>
+						<li menuid="partner_management_partner_autorize" name="合作伙伴授权"
+							action="partner_authorize.html" />
+						</li>
+					</ul>
+				</menu>
+				<menu id="systemmenu" menuid="system_manage_menu"
+					style="display: none" active="false">
+					<ul menuid="system_management_menu" name="内部账号管理">
+						<li menuid="system_management_create_account" name="新建账号"
+							action="system_account_create.html" />
+						</li>
+						<li menuid="system_management_modify_account" name="修改账号"
+							action="system_account_modify.html" />
+						</li>
+						<li menuid="system_management_delete_account" name="删除账号"
+							action="system_account_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="system_maintenance_menu" name="系统维护">
+						<li menuid="system_maintenance_book_bakcup" name="备份书籍"
+							action="system_maintenance_book_bakcup.html" />
+						</li>
+						<li menuid="system_maintenance_db_bakcup" name="备份数据库"
+							action="system_maintenance_db_bakcup.html" />
+						</li>
+						<li menuid="system_maintenance_log_bakcup" name="备份日志"
+							action="system_maintenance_log_bakcup.html" />
+						</li>
+					</ul>
+					<ul menuid="system_audit_menu" name="审计">
+						<li menuid="system_audit_operation_statistics" name="操作统计"
+							action="system_audit_operation_statistics.html" />
+						</li>
+
+					</ul>
+				</menu>
+				<menu id="resourcemenu" menuid="resource_manage_menu"
+					style="display: none" active="true">
+
+					<ul menuid="book_management_menu" name="书籍管理">
+						<li menuid="book_management_add" name="添加书籍"
+							action="book_management_add.html" />
+						</li>
+						<li menuid="book_management_edit" name="编辑书籍"
+							action="book_management_edit.html" />
+						</li>
+						<li menuid="book_management_delete" name="删除书籍"
+							action="book_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="library_management_menu" name="书馆管理">
+						<li menuid="library_management_add" name="添加书馆"
+							action="library_management_add.html" />
+						</li>
+						<li menuid="library_management_edit" name="编辑书馆"
+							action="library_management_edit.html" />
+						</li>
+						<li menuid="library_management_delete" name="删除书馆"
+							action="library_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="category_management_menu" name="书籍分类管理">
+						<li menuid="category_management_add" name="添加书籍分类"
+							action="category_management_add.html" />
+						</li>
+						<li menuid="category_management_edit" name="编辑书籍分类"
+							action="category_management_edit.html" />
+						</li>
+						<li menuid="category_management_delete" name="删除书籍分类"
+							action="category_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="book_news_management_menu" name="书讯管理">
+						<li menuid="book_news_management_add" name="添加书讯"
+							action="book_news_management_add.html" />
+						</li>
+						<li menuid="book_news_management_edit" name="编辑书讯"
+							action="book_news_management_edit.html" />
+						</li>
+						<li menuid="book_news_management_delete" name="删除书讯"
+							action="book_news_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="book_review_management_menu" name="书评管理">
+						<li menuid="book_review_management_add" name="添加书评"
+							action="book_review_management_add.html" />
+						</li>
+						<li menuid="book_review_management_edit" name="编辑书评"
+							action="book_review_management_edit.html" />
+						</li>
+						<li menuid="book_review_management_delete" name="删除书评"
+							action="book_review_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="interview_management_menu" name="访谈管理">
+						<li menuid="interview_management_add" name="添加访谈"
+							action="interview_management_add.html" />
+						</li>
+						<li menuid="interview_management_edit" name="编辑访谈"
+							action="interview_management_edit.html" />
+						</li>
+						<li menuid="interview_management_delete" name="删除访谈"
+							action="interview_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="subject_management_menu" name="栏目管理">
+						<li menuid="subject_management_add" name="添加栏目"
+							action="subject_management_add.html" />
+						</li>
+						<li menuid="subject_management_edit" name="编辑栏目"
+							action="subject_management_edit.html" />
+						</li>
+						<li menuid="subject_management_delete" name="删除栏目"
+							action="subject_management_delete.html" />
+						</li>
+					</ul>
+					<ul menuid="activity_management_menu" name="俱乐部活动管理">
+						<li menuid="activity_management_add" name="添加活动"
+							action="activity_management_add.html" />
+						</li>
+						<li menuid="activity_management_edit" name="编辑活动"
+							action="activity_management_edit.html" />
+						</li>
+						<li menuid="activity_management_delete" name="删除活动"
+							action="activity_management_delete.html" />
+						</li>
+					</ul>
+				</menu>
+				<script type="text/javascript">
+					menuManager.createMenuById("left_menu_area", "resourcemenu");
+					menuManager.createMenuById("left_menu_area", "systemmenu");
+					menuManager.createMenuById("left_menu_area", "businessmenu");
+
+				</script></td>
+				<td id="content-td" width="100%" height="100%" >
+					<iframe id="content-frame" title="content frame" src="first_page.html" frameborder="0" width="100%" height="400"  onload="setIframeHeight(this);"></iframe>
+			  </td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		
+		<td  class="bottom_line"  >&nbsp;</td>
+		
+	</tr>
+</table>
+</body>
+</html>
