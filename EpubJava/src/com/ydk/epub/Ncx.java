@@ -1,7 +1,9 @@
 package com.ydk.epub;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,9 +24,10 @@ public class Ncx {
 	private List<TocItem> _ncx = new ArrayList(); 
 	private List<String> _encryption = new ArrayList();
 	private Encrypter encrypter;
-	public Ncx(ZipFile book) throws IOException, JDOMException{
+	public Ncx(ZipFile book) throws Exception{
 		_epubFile = book;
 		getEncryptedChapterList();
+		parse();
 	}
 	public void parse() throws Exception{
 		ZipEntry ncx = _epubFile.getEntry(NCX);
@@ -55,26 +58,53 @@ public class Ncx {
 		}
 		SAXBuilder builder = new SAXBuilder();
 		InputStream in = _epubFile.getInputStream(fe);
+		
+		//for test only
+//		System.out.println("in.available="+in.available());
+//		BufferedReader fr = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+//		String ret = "";
+//		String line;
+//		while ((line =fr.readLine()) != null){
+//			ret += line;
+//		}
+//		System.out.println("ret="+ret);
+//		
+//		in.reset();
+		
 		org.jdom.Document doc = builder.build(in);
 		
 		Element root = doc.getRootElement();
+		//System.out.println(root.toString());
 		Namespace ns = root.getNamespace();
 //		Namespace ds = root.getNamespace("ds");
 		Namespace enc = root.getNamespace("enc");
-		
+//		List xl = root.getChildren("EncryptedData");
+//		System.out.println("xl.size="+xl.size());
+//		List xll = root.getChildren();
+//		Iterator x11i = xll.iterator();
+//		while (x11i.hasNext()){
+//			Element xx11e = (Element) x11i.next();
+//			System.out.println("xxlle="+xx11e.getName());
+//			System.out.println("xxlle="+xx11e.getNamespace());
+//		}
+//		System.out.println("xll.size="+xll.size());
 		List l = root.getChildren("EncryptedData", enc);
 		if (l != null){
 			Iterator iter = l.iterator();
 			while (iter.hasNext()){
 				Element child = (Element)iter.next();
 				Element uri = child.getChild("CipherData", enc).getChild("CipherReference", enc);
-				_encryption.add(uri.getAttributeValue("URI", ns));
+				String src = uri.getAttributeValue("URI");
+				System.out.println(src);
+				if (src != null){
+					_encryption.add(src);
+				}
 			}
 		}
 	}
 	public boolean isChapterEncrypted(String url){
 		if (url == null){
-			return true;
+			return false;
 		}
 		if (_encryption != null){
 			Iterator iter = _encryption.iterator();

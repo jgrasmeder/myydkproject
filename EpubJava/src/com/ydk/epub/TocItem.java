@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
@@ -37,9 +38,18 @@ public class TocItem {
 		_ncx = ncx;
 		Namespace ns = e.getNamespace();
 		title = e.getChild("navLabel",ns).getChild("text", ns).getText();
-		url = e.getChild("content",ns).getAttributeValue("src", ns);
+		Element src = e.getChild("content",ns);
+		//String surl = src.getAttributeValue("src");
+//		List x = src.getAttributes();
+//		Iterator xi = x.iterator();
+//		while(xi.hasNext()){
+//			Attribute a = (Attribute)xi.next();
+//			Namespace nnn = a.getNamespace();
+//			String asl = a.getValue();
+//		}
+		url = src.getAttributeValue("src");
 		encrypted = ncx.isChapterEncrypted(url);
-		chapterClass = e.getAttributeValue("class",ns);
+		chapterClass = e.getAttributeValue("class");
 		
 		
 		List<Element> l = e.getChildren("navPoint");
@@ -106,7 +116,7 @@ public class TocItem {
 
 	//strip the html tags, only text for lucene search.
 	public String getTextContent() throws Exception{
-		ZipEntry fe = _epubbook.getEntry(Book.OEBPS+"url");
+		ZipEntry fe = _epubbook.getEntry(Book.OEBPS+url);
 		if (fe == null){
 			return null;
 		}
@@ -126,6 +136,7 @@ public class TocItem {
 		if (ret == null){
 			ret = "";
 		}
+		System.out.println(url+"|||"+ret);
 		if (children != null){
 			Iterator<TocItem> iter = children.iterator();
 			while (iter.hasNext()){
@@ -133,6 +144,7 @@ public class TocItem {
 				ret += child.getTextContent();
 			}
 		}
+		
 		return ret;
 		
 	}
