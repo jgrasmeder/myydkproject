@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<model xmlns="http://ns.adobe.com/Fiber/1.0">
+  <annotation name="ActionScriptGeneration">
+    <item name="FullyQualifyReferences">true</item>
+  </annotation>
+  <service name="Contactus">
+    <annotation name="ActionScriptGeneration">
+      <item name="WSDL-service">ContactUsServiceImplService</item>
+      <item name="ServiceType">WebService</item>
+      <item name="WSDL">http://221.122.79.226:8080/MyYdkProject/webservice/contactus?wsdl</item>
+      <item name="Package">services.contactus</item>
+      <item name="WSDL-port">ContactUsServiceImplPort</item>
+    </annotation>
+    <annotation name="ASFilesGenerated">
+      <item name="ASFilesGenerated">services/contactus/_Super_Contactus.as~#~services/contactus/Contactus.as~#~</item>
+    </annotation>
+    <annotation name="ASGenerationWSDLTypeMap">
+      <item name="PostMessageResponse">http://contactus.webservice.ydk.com/,postMessageResponse</item>
+      <item name="GetMessages">http://contactus.webservice.ydk.com/,getMessages</item>
+      <item name="Message">http://contactus.webservice.ydk.com,Message</item>
+      <item name="GetMessagesResponse">http://contactus.webservice.ydk.com/,getMessagesResponse</item>
+      <item name="PostMessage">http://contactus.webservice.ydk.com/,postMessage</item>
+    </annotation>
+    <annotation name="ServiceTypeGroup">
+      <item name="ServiceBackendType">WebService</item>
+    </annotation>
+    <annotation name="WSDLCollectionElementTypes">
+      <item name="http://contactus.webservice.ydk.com,ArrayOfMessage">Message::http://contactus.webservice.ydk.com,Message</item>
+    </annotation>
+    <annotation name="ServiceConfig">
+      <item name="DEFAULT_ENTITY_PACKAGE">valueObjects</item>
+      <item name="WSDL-endpoint">http://221.122.79.226:8080/MyYdkProject/webservice/contactus</item>
+      <item name="LINKED_FILE"></item>
+    </annotation>
+    <function name="getMessages" arguments="getMessages:GetMessages" return-type="GetMessagesResponse">
+      <annotation name="analyze group">
+        <item name="analyzed">true</item>
+      </annotation>
+      <annotation name="WSDLName">
+        <item name="SOAPAction"></item>
+        <item name="getMessages">http://contactus.webservice.ydk.com/,getMessages</item>
+      </annotation>
+      <annotation name="original signature">
+        <item name="inputParams">GetMessages</item>
+        <item name="returnType">GetMessagesResponse</item>
+      </annotation>
+    </function>
+    <function name="postMessage" arguments="postMessage:PostMessage" return-type="PostMessageResponse">
+      <annotation name="analyze group">
+        <item name="analyzed">true</item>
+      </annotation>
+      <annotation name="WSDLName">
+        <item name="postMessage">http://contactus.webservice.ydk.com/,postMessage</item>
+        <item name="SOAPAction"></item>
+      </annotation>
+      <annotation name="original signature">
+        <item name="inputParams">PostMessage</item>
+        <item name="returnType">PostMessageResponse</item>
+      </annotation>
+    </function>
+  </service>
+  <entity name="PostMessageResponse">
+    <annotation name="EntityProperties">
+      <item name="EntityOriginalName">PostMessageResponse</item>
+    </annotation>
+    <annotation name="service Group">
+      <item name="service">Contactus</item>
+    </annotation>
+    <annotation name="ServerProperties">
+      <item name="IncludeRemoteClass">nonempty</item>
+    </annotation>
+    <annotation name="ActionScriptGeneration">
+      <item name="Package">valueObjects</item>
+    </annotation>
+    <annotation name="ASFilesGenerated">
+      <item name="ASFilesGenerated">valueObjects/_PostMessageResponseEntityMetadata.as~#~valueObjects/_Super_PostMessageResponse.as~#~valueObjects/PostMessageResponse.as~#~</item>
+    </annotation>
+  </entity>
+  <entity name="GetMessages">
+    <annotation name="EntityProperties">
+      <item name="EntityOriginalName">GetMessages</item>
+    </annotation>
+    <annotation name="service Group">
+      <item name="service">Contactus</item>
+    </annotation>
+    <annotation name="ServerProperties">
+      <item name="IncludeRemoteClass">nonempty</item>
+    </annotation>
+    <annotation name="ActionScriptGeneration">
+      <item name="Package">valueObjects</item>
+    </annotation>
+    <annotation name="ASFilesGenerated">
+      <item name="ASFilesGenerated">valueObjects/_GetMessagesEntityMetadata.as~#~valueObjects/_Super_GetMessages.as~#~valueObjects/GetMessages.as~#~</item>
+    </annotation>
+  </entity>
+  <entity name="Message">
+    <annotation name="EntityProperties">
+      <item name="EntityOriginalName">Message</item>
+    </annotation>
+    <annotation name="service Group">
+      <item name="service">Contactus</item>
+    </annotation>
+    <annotation name="ServerProperties">
+      <item name="IncludeRemoteClass">nonempty</item>
+    </annotation>
+    <annotation name="ActionScriptGeneration">
+      <item name="Package">valueObjects</item>
+    </annotation>
+    <annotation name="ASFilesGenerated">
+      <item name="ASFilesGenerated">valueObjects/_MessageEntityMetadata.as~#~valueObjects/_Super_Message.as~#~valueObjects/Message.as~#~</item>
+    </annotation>
+    <property name="email" type="string" required="true"/>
+    <property name="firstName" type="string" required="true"/>
+    <property name="lastName" type="string" required="true"/>
+    <property name="text" type="string" required="true"/>
+  </entity>
+  <entity name="GetMessagesResponse">
+    <annotation name="EntityProperties">
+      <item name="EntityOriginalName">GetMessagesResponse</item>
+    </annotation>
+    <annotation name="WSDLCollectionTypes">
+      <item name="_return">http://contactus.webservice.ydk.com,ArrayOfMessage</item>
+    </annotation>
+    <annotation name="service Group">
+      <item name="service">Contactus</item>
+    </annotation>
+    <annotation name="ServerProperties">
+      <item name="IncludeRemoteClass">nonempty</item>
+    </annotation>
+    <annotation name="ActionScriptGeneration">
+      <item name="Package">valueObjects</item>
+    </annotation>
+    <annotation name="ASFilesGenerated">
+      <item name="ASFilesGenerated">valueObjects/_GetMessagesResponseEntityMetadata.as~#~valueObjects/_Super_GetMessagesResponse.as~#~valueObjects/GetMessagesResponse.as~#~</item>
+    </annotation>
+    <property name="_return" type="Message[]" required="true"/>
+  </entity>
+  <entity name="PostMessage">
+    <annotation name="EntityProperties">
+      <item name="EntityOriginalName">PostMessage</item>
+    </annotation>
+    <annotation name="service Group">
+      <item name="service">Contactus</item>
+    </annotation>
+    <annotation name="ServerProperties">
+      <item name="IncludeRemoteClass">nonempty</item>
+    </annotation>
+    <annotation name="ActionScriptGeneration">
+      <item name="Package">valueObjects</item>
+    </annotation>
+    <annotation name="ASFilesGenerated">
+      <item name="ASFilesGenerated">valueObjects/_PostMessageEntityMetadata.as~#~valueObjects/_Super_PostMessage.as~#~valueObjects/PostMessage.as~#~</item>
+    </annotation>
+    <property name="message" type="Message" required="true"/>
+  </entity>
+</model>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ComboBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:mx="library://ns.adobe.com/flex/halo"
+			 
+			 dataProvider="{authorList}" editable="false"  width="100%" paddingBottom="3" paddingTop="3" height="20"
+			 
+			 >
+	<fx:Script >
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			[Bindable] public var authorList :ArrayCollection = new ArrayCollection
+				(
+					[
+						{data:"鲁迅",label:"鲁迅"},
+						{data:"张恨水",label:"张恨水"},
+						{data:"张爱玲",label:"张爱玲"},
+						{data:"金镛",label:"金镛"},
+						{data:"王小波",label:"王小波"},
+						{data:"马可˙吐温",label:"马可˙吐温"}
+						
+					]
+				)
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</mx:ComboBox>

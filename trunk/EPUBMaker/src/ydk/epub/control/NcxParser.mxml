@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/halo" 
+					
+					label="目录编辑" width="100%" height="100%" xmlns:local="*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script >
+		<![CDATA[
+			import mx.controls.TextArea;
+			
+			[Bindable]
+			public var selectedNode:XML;
+			
+			private var regexes:Array;
+			
+			private var _bookContent:BookContentLoader;
+			public function set bookContent(bc:BookContentLoader) : void {
+				_bookContent = bc;
+			}
+			
+			private var _chapterSelector:ChapterParserSelector;
+			public function set chapterSelector(cps:ChapterParserSelector) : void {
+				_chapterSelector = cps;
+			}
+			
+			
+			public function setRegex() : void {
+				regexes = [
+					_chapterSelector.isChapterLevel_1.selected ? new RegExp(_chapterSelector.regexChapterLevel_1.selectedLabel, "mg" ) : null,
+					_chapterSelector.isChapterLevel_2.selected ? new RegExp(_chapterSelector.regexChapterLevel_2.selectedLabel, "mg" ) : null,
+					_chapterSelector.isChapterLevel_3.selected ? new RegExp(_chapterSelector.regexChapterLevel_3.selectedLabel, "mg" ) : null,
+					_chapterSelector.isChapterLevel_4.selected ? new RegExp(_chapterSelector.regexChapterLevel_4.selectedLabel, "mg" ) : null,
+					null
+				]	
+			}
+			
+			// Event handler for the Tree control change event.
+			public function treeChanged(evt:Event):void {
+				selectedNode = Tree(evt.target).selectedItem as XML;
+			}
+			
+			
+			protected function generateNCX(event:MouseEvent):void
+			{
+					clearNCX();
+					setRegex();
+					splitContent(null, _bookContent.bookcontentbox.text, 0);
+					treeNcx.dataProvider = ncx;
+				}
+				
+				
+			}
+			
+			private function splitContent(parent:XML, original:String, level:int):void {
+				if (original == null ){
+					trace("one of the content  is null: content=" + original); 
+					return;
+				}
+				if (original.length == 0 ){
+					trace("string length is zero:  content="+original.length);
+					return;
+				}
+				if (level < 0 || level > 4){
+					trace ("level is out of range:"+level);
+					return;
+				}
+				if (regexes == null){
+					setRegex();
+				}
+				
+				if (regexes[level] == null){
+					trace("Level "+level+" has not been selected");
+					if (parent != null){
+						parent.@content=parent.@title+original;
+					}
+					return;
+				}
+				var chapters:Array;
+				var contents:Array;
+				var i:int;
+				var node:XML;
+				chapters = original.match(regexes[level]);
+				contents = original.split(regexes[level]);
+				trace("chapters="+chapters.length);
+				trace("contents="+contents.length);
+				if (chapters == null || chapters.length == 0){
+					trace("no chapter found");
+				}
+				
+				if (contents[0].length > 0){
+					trace("A part that before any chapter" );
+					
+					if (parent != null){
+						parent.@content = contents[0];
+					}else{
+						node = new XML(<navPoint />);
+						parent = ncx.child("navMap")[0];
+						node.@title = "未定义";
+						node.@content = "+++!!!"; contents[0];
+						parent.appendChild(node);
+						splitContent(node, contents[0],level+1);
+					}
+				}
+				
+				if (parent == null){
+					parent = ncx.child("navMap")[0];
+					
+				}
+				for (i = 1; i < contents.length; i++){
+					trace("level="+level+"  | i="+i);						
+					node = new XML(<navPoint />);
+					node.@title = chapters[i-1];
+					node.@content="+++---+++";
+					parent.appendChild(node);
+					splitContent(node, contents[i],level+1);
+					
+				}
+			
+			}
+			
+			
+			private function clearNCX():void{
+				ncx = new XML(<ncx>
+						<navMap >
+						</navMap>
+					</ncx>);
+				
+			}
+			
+			[Bindable] private var ncx:XML = 
+				<ncx version="2005-1" xml:lang="en" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+					<navMap>
+					</navMap>
+				  </ncx>
+				
+				
+			private function treeLabel(item:Object):String
+			{
+				var node:XML = XML(item);
+				if( node.localName() == "navMap" )
+					
+					return "目录";// node.@title;
+				else if( node.localName() == "navPoint" )
+					
+					return node.@title;
+				else  
+					return node.localName();
+			}
+			public function get toc () : XML{
+				return ncx;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%">
+		<s:HGroup width="100%" height="20">
+			<mx:Spacer width="5" height="20"/>
+			<s:Button label="选择章节名称" click="_chapterSelector.Open(event)"/>
+			<s:Button label="自动生成目录" click="generateNCX(event)"/>
+		</s:HGroup>
+		<mx:HDividedBox width="100%" height="100%">
+			<mx:Tree id="treeNcx" width="50%" height="100%" labelField="@label" labelFunction="treeLabel"
+					 showRoot="false" dataProvider="{ncx}" change="treeChanged(event);"/>
+			<s:TextArea height="100%" width="50%"
+						text="{selectedNode.@content}" editable="false"/>
+		</mx:HDividedBox>
+	</s:VGroup>
+	
+</s:NavigatorContent>
+

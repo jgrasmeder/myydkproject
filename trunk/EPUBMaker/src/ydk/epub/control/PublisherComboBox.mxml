@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ComboBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:mx="library://ns.adobe.com/flex/halo"
+			 dataProvider="{publisherList}" editable="false" width="100%" minWidth="300" maxWidth="600" paddingBottom="3" paddingTop="3" height="20"
+			 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script >
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			[Bindable] public var publisherList :ArrayCollection = new ArrayCollection
+				(
+					[
+						{data:"机械工业出版社",label:"机械工业出版社"},
+						{data:"电子工业出版社",label:"电子工业出版社"},
+						{data:"中国旅游出版社",label:"中国旅游出版社"},
+						{data:"北京大学出版社",label:"北京大学出版社"},
+					]
+				)
+				
+		]]>
+	</fx:Script>
+</mx:ComboBox>

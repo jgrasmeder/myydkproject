@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ComboBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:mx="library://ns.adobe.com/flex/halo"
+			 
+			 dataProvider="{encodeList}" width="80" paddingBottom="3" paddingTop="3" height="20"
+			 
+			 >
+	<fx:Script >
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			[Bindable] public var encodeList :ArrayCollection = new ArrayCollection
+				(
+					[
+						{data:"AUTO",label:"自动识别"},
+						{data:"GB2312",label:"GB2312"},
+						{data:"GBK",label:"GBK"},
+						{data:"ANSI",label:"ANSI"},
+						{data:"UTF-8",label:"UTF-8"},
+						{data:"UNICODE",label:"UNICODE"}
+					]
+				)
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</mx:ComboBox>

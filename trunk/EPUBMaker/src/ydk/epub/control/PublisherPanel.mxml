@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/halo" 
+		 
+		 horizontalCenter="0" 
+		 verticalCenter="0" 
+		 width="380" 
+		 height="510" 
+		 title="出版社信息" 
+		 >
+	<fx:Script >
+		<![CDATA[
+			
+			
+			public function onOpen(event:Event) : void{
+				this.visible = true;
+			}
+			private function onOK(event:Event) : void{
+				this.visible = false;
+			}
+			private function onCancel(event:Event) : void{
+				this.visible = false;	
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup left="10" top="10" right="10" bottom="10">
+		
+		<s:HGroup width="100%" height="20">
+			
+			<s:Label text="名称"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			
+			<s:Label text="通信地址"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:Label text="邮政编码"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20">
+			<s:Label text="联系电话"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:Label text="传真"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:Label text="电子邮箱"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		
+		<s:HGroup width="100%" height="20">
+			
+			<s:Label text="联系人"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="100%">
+			
+			<s:Label text="出版社简介"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextArea editable="true" enabled="true" width="100%" height="100%"/>
+		</s:HGroup>
+		
+		
+		<s:HGroup width="100%" height="30" verticalAlign="middle" textAlign="center" paddingLeft="0" paddingRight="0">
+			<mx:Spacer width="100%" height="20"/>
+			<s:Button label="确定" click="onOK(event)"/>
+			<mx:Spacer width="20" height="20"/>
+			<s:Button label="取消" click="onCancel(event)"/>
+			<mx:Spacer  width="100%" height="20" />
+		</s:HGroup>
+	</s:VGroup>
+</s:Panel>

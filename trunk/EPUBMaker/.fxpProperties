@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" compiles="true" parentProject="c9180a7b-8048-490e-addd-6b1ecc8bc2df" projectUUID="c9180a7b-8048-490e-addd-6b1ecc8bc2df" sdkVersion="4.0.0" uuid="058889a9-5af5-4c9b-a6bf-3f8f8b5901bd" version="3">
+  <projects/>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="058889a9-5af5-4c9b-a6bf-3f8f8b5901bd"/>
+    <linked location="E:/YDK/EPUBFlex/libs" path="/libs" position="1" uuid="02819c88-9aa2-4a46-985f-f8a018c994bb"/>
+    <linked location="${FLEXUNIT_LIB_LOCATION}/version4libs/Common/" path="${FLEXUNIT_LIB_LOCATION}/version4libs/Common/" position="2" uuid="02819c88-9aa2-4a46-985f-f8a018c994bb"/>
+    <linked location="${FLEXUNIT_LIB_LOCATION}/version4libs/FlexProject/" path="${FLEXUNIT_LIB_LOCATION}/version4libs/FlexProject/" position="3" uuid="02819c88-9aa2-4a46-985f-f8a018c994bb"/>
+    <linked location="${FLEXUNIT_LOCALE_LOCATION}/version4locale/" path="${FLEXUNIT_LOCALE_LOCATION}/version4locale/" position="4" uuid="02819c88-9aa2-4a46-985f-f8a018c994bb"/>
+    <linked location="${DCD_LIB_LOCATION}" path="${DCD_LIB_LOCATION}" position="5" uuid="058889a9-5af5-4c9b-a6bf-3f8f8b5901bd"/>
+    <linked location="${DCD_LOCALE_LOCATION}" path="${DCD_LOCALE_LOCATION}" position="6" uuid="058889a9-5af5-4c9b-a6bf-3f8f8b5901bd"/>
+  </swc>
+  <misc/>
+  <theme/>
+</fxpProperties>

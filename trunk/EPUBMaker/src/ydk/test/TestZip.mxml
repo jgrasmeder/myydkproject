@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/halo" minWidth="1024" minHeight="768">
+
+	<fx:Script>
+		<![CDATA[
+			import ydk.zip.ZipFile;
+			
+			private var fr:FileReference = new FileReference();
+			
+			[Bindable]private var _zipFile:ZipFile;
+			
+			internal function set zipFile(zipFile:ZipFile):void {
+				_zipFile = zipFile;
+			}
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// brower and select file;
+				
+				var fileFilter:FileFilter = new FileFilter("zip Files", "*.epub;*.zip");
+				fr = new FileReference();
+				fr.addEventListener(Event.SELECT, onSelectFile);
+				//fr.addEventListener(Event.CANCEL, onCancelBrowse);
+				fr.browse([fileFilter]);	
+			}
+			protected function onSelectFile (e:Event) : void
+			{
+				//var fr:FileReference = e.target as FileReference;
+				//bookfilepath.text = fr.name; 
+				
+				//listen for when the file has loaded
+				fr.addEventListener(Event.COMPLETE, onLoadComplete);
+				fr.addEventListener(ProgressEvent.PROGRESS, onLoadProgress);
+				fr.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				
+				
+//				_panelProgress.title = "正在读取文件：" + fr.name;
+//				_panelProgress.progressBarBookLoading.setProgress(0, 100);
+//				_panelProgress.progressBarBookLoading.label = "已经读取 0 字节";
+//				
+//				_panelProgress.visible = true;
+				//				_panelProgress.progressBarBookLoading.source = fr;
+				
+				//load the content of the file
+				fr.load();
+				
+			}
+			protected function onLoadProgress (e:ProgressEvent) : void
+			{
+				var file:FileReference = FileReference(e.target);
+				trace("onLoadProgress: name=" + file.name + " bytesLoaded=" + e.bytesLoaded + " bytesTotal=" + e.bytesTotal);
+				
+//				var pos:Number = Math.round( e.bytesLoaded / e.bytesTotal * 100);
+//				//loadingfiletext.text 
+//				_panelProgress.progressBarBookLoading.label = "已经读取："+pos+"%  (" +e.bytesLoaded + " / " + e.bytesTotal +"字节)";
+//				_panelProgress.progressBarBookLoading.setProgress(pos, 100);
+				
+				
+				
+			}
+			protected function onCancelBrowse (e:Event) : void
+			{
+				trace("cancel browser books");
+				
+			}
+			//called when the file has completed loading
+			private function onLoadComplete(e:Event):void
+			{
+				var data:ByteArray = fr.data;
+				var _zip:ZipFile = new ZipFile("myzipfile.zip");
+				_zip.parse(data);
+				zipFile = _zip;
+				fr = null;
+				
+			}
+			
+			//called if an error occurs while loading the file contents
+			private function onLoadError(e:IOErrorEvent):void
+			{
+				trace ("loadfile error:"+e);
+			}
+			
+			private function labelSize(item:Object, column:DataGridColumn):String {
+				return sizeFormatter.format(item[column.dataField]);
+			}
+			
+			private function labelModified(item:Object, column:DataGridColumn):String {
+				return dateFormatter.format(new Date(item.date));
+			}
+			
+			private function labelCrc(item:Object, column:DataGridColumn):String {
+				return item.crc.toString(16).toUpperCase();
+			}
+
+			protected function createzip_clickHandler(event:MouseEvent):void
+			{
+				fr = new FileReference();
+				var fileFilter:FileFilter = new FileFilter("zip Files", "*.epub;*.zip");
+				fr = new FileReference();
+				//fr.addEventListener(Event.SELECT, onSaveFile);
+				//fr.addEventListener(Event.CANCEL, onCancelBrowse);
+				//fr.browse([fileFilter]);	
+				onSaveFile(null);
+			}
+			protected function onSaveFile (e:Event) : void
+			{
+				//var fr:FileReference = e.target as FileReference;
+				//bookfilepath.text = fr.name; 
+				
+				//listen for when the file has loaded
+				fr.addEventListener(Event.COMPLETE, onSaveComplete);
+				fr.addEventListener(ProgressEvent.PROGRESS, onLoadProgress);
+				fr.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				
+				var z:ZipFile = new ZipFile("testZip");
+				var txtData:ByteArray = new ByteArray();
+				txtData.writeMultiByte(content.text, "ansi");
+				
+				z.addFile(txtData, "textinbox.txt" );
+				var data:ByteArray = new ByteArray();
+				z.serialize(data);
+				fr.save(data, "2.zip");
+				
+			}
+			protected function onSaveComplete (e:Event) : void
+			{
+				trace ("Zip File saved as: "+fr.name);
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:NumberFormatter id="sizeFormatter" useThousandsSeparator="true" />
+		<mx:DateFormatter id="dateFormatter" formatString="MM/DD/YYYY L:NN A" />
+	</fx:Declarations>
+	<s:Panel left="20" top="20" right="20" height="500">
+		<s:VGroup width="100%" height="100%">
+			<s:HGroup width="100%" height="100%">
+				<mx:DataGrid height="100%" width="100%" id="filelist" dataProvider="{_zipFile.FileList}" >
+					<mx:columns>
+						<mx:DataGridColumn headerText="FileName" dataField="fileName" width="300" />
+						<mx:DataGridColumn headerText="Size" dataField="uncompressedSize" labelFunction="labelSize"   />
+						<mx:DataGridColumn headerText="Packed" dataField="compressedSize" labelFunction="labelSize" />
+						<mx:DataGridColumn headerText="Modified" dataField ="date"  width="150" labelFunction="labelModified"/>
+						<mx:DataGridColumn headerText="CRC32" dataField="crc" labelFunction="labelCrc" />		
+						<mx:DataGridColumn headerText="Version required" dataField="version" labelFunction="labelSize"   />
+						<mx:DataGridColumn headerText="Version made" dataField="versionMade" labelFunction="labelSize"   />
+						<mx:DataGridColumn headerText="Disk Start" dataField="diskNumberStart" labelFunction="labelSize"   />
+						<mx:DataGridColumn headerText="Entry Offset" dataField="offsetLocalHeader" labelFunction="labelSize"   />
+						<mx:DataGridColumn headerText="Method" dataField="method" labelFunction="labelSize"   />
+						<mx:DataGridColumn headerText="Flag" dataField="flag" labelFunction="labelSize"   />
+
+					</mx:columns>
+				</mx:DataGrid>
+				<s:TextArea id="content" text="这部分的内容是一个文本文件，但作为压缩文件中的一个文件 而存在。" width="200" height="100%"/>
+			</s:HGroup>
+			<s:HGroup width="100%" height="30" verticalAlign="middle" textAlign="center">
+				<s:Button label="Open a local Zip File" click="button1_clickHandler(event)" textAlign="center"/>
+				<s:Button label="Create ZipFile" id="createzip" click="createzip_clickHandler(event)"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:Panel>
+</s:Application>
