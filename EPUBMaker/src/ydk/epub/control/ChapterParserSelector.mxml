@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/halo"
+		 
+		 horizontalCenter="0" verticalCenter="0" width="400" height="185" title="选择章节识别字符"
+	>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Style >
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/halo";
+		
+		.comboxindex
+		{
+			fontSize: 12;
+			paddingBottom: 2;
+			paddingLeft: 5;
+			paddingRight: 5;
+			paddingTop: 2;
+			height:16;
+			
+		}
+		
+	</fx:Style>
+	<fx:Script >
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			[Bindable]	public var chapterParserString :ArrayCollection = new ArrayCollection
+				(
+					[
+						{data:"第xxx章",label:"^第.{1,3}章.*$"},
+						{data:"第xxx回",label:"^第.{1,3}回.*$"},
+						{data:"第xxx节",label:"^第.{1,3}节.*$"},
+						{data:"第xxx部",label:"^第.{1,3}部.*$"},
+						{data:"第xxx小节",label:"^第.{1,3}小节.*$"},
+						{data:"###xxx###",label:"^###.+###.*$"},
+						{data:"^[一二三四五六七八九十百〇]{1,3}、.*$",label:"^[一二三四五六七八九十百〇]{1,3}、.*$"},
+						{data:"^（[一二三四五六七八九十百〇]{1,3}）.*$",label:"^（[一二三四五六七八九十百〇]{1,3}）.*$"}
+						
+					]
+				)
+			protected function switchChapterLevel_1(event:MouseEvent):void
+			{
+				if (isChapterLevel_1.selected == true){
+					regexChapterLevel_1.enabled = true;
+					isChapterLevel_2.enabled = true;
+					
+				}else{
+					regexChapterLevel_1.enabled = false;
+					
+					isChapterLevel_2.enabled = false;
+					regexChapterLevel_2.enabled = false;
+					isChapterLevel_2.selected = false;
+					
+					isChapterLevel_3.enabled = false;
+					regexChapterLevel_3.enabled = false;
+					isChapterLevel_3.selected = false;
+					
+					isChapterLevel_4.enabled = false;
+					regexChapterLevel_4.enabled = false;
+					isChapterLevel_4.selected = false;
+				}
+				
+			}
+			
+			
+			protected function switchChapterLevel_2(event:MouseEvent):void
+			{
+				if (isChapterLevel_2.selected){
+					regexChapterLevel_2.enabled = true;
+					isChapterLevel_3.enabled = true;
+					
+				}else{
+					regexChapterLevel_2.enabled = false;
+					
+					isChapterLevel_3.enabled = false;
+					regexChapterLevel_3.enabled = false;
+					isChapterLevel_3.selected = false;
+					
+					
+					isChapterLevel_4.enabled = false;
+					regexChapterLevel_4.enabled = false;
+					isChapterLevel_3.selected = false;
+					
+				}
+			}
+			
+			
+			protected function switchChapterLevel_3(event:MouseEvent):void
+			{
+				if (isChapterLevel_3.selected){
+					regexChapterLevel_3.enabled = true;
+					isChapterLevel_4.enabled = true;
+					
+				}else{
+					regexChapterLevel_3.enabled = false;
+					
+					isChapterLevel_4.enabled = false;
+					regexChapterLevel_4.enabled = false;
+					isChapterLevel_4.selected = false;
+					
+				}
+			}
+			
+			
+			protected function switchChapterLevel_4(event:MouseEvent):void
+			{
+				regexChapterLevel_4.enabled = isChapterLevel_4.selected;
+			}
+			protected function onOK(event:MouseEvent):void
+			{
+				this.visible = false;
+			}
+			
+			protected function onCancel(event:MouseEvent):void
+			{
+				this.visible = false;
+			}
+			public function Open(event:MouseEvent):void
+			{
+				this.visible = true;
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup left="10" top="10" right="10" bottom="10">
+		
+		<s:HGroup width="100%" height="20">
+			<s:HGroup width="100%" height="20">
+				<s:CheckBox  id="isChapterLevel_1" label="一级标题"  click="switchChapterLevel_1(event)" enabled="true" selected="false"/>
+				<mx:ComboBox id="regexChapterLevel_1" editable="true" styleName="comboxindex" width="100%" height="20"  dataProvider="{chapterParserString}" enabled="false"></mx:ComboBox>
+			</s:HGroup>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:CheckBox id="isChapterLevel_2" label="二级标题" click="switchChapterLevel_2(event)" enabled="false"/>
+			<mx:ComboBox  id="regexChapterLevel_2" editable="true" styleName="comboxindex" width="100%" height="20" dataProvider="{chapterParserString}" enabled="false"></mx:ComboBox>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:CheckBox  id="isChapterLevel_3" label="三级标题" click="switchChapterLevel_3(event)" enabled="false"/>
+			<mx:ComboBox  id="regexChapterLevel_3" editable="true" styleName="comboxindex" width="100%" height="20" dataProvider="{chapterParserString}" enabled="false"></mx:ComboBox>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:HGroup width="100%" height="20">
+				<s:CheckBox  id="isChapterLevel_4" label="四级标题" click="switchChapterLevel_4(event)" enabled="false"/>
+				<mx:ComboBox  id="regexChapterLevel_4" editable="true" styleName="comboxindex" width="100%" height="20" dataProvider="{chapterParserString}" enabled="false"></mx:ComboBox>
+			</s:HGroup>
+		</s:HGroup><s:HGroup width="100%" height="30" verticalAlign="middle" textAlign="center" paddingLeft="0" paddingRight="0">
+					   <mx:Spacer width="100%" height="20"/>
+					   <s:Button label="确定" click="onOK(event)"/>
+					   <mx:Spacer width="20" height="20"/>
+					   <s:Button label="取消" click="onCancel(event)"/>
+					   <mx:Spacer  width="100%" height="20" />
+				   </s:HGroup>
+	</s:VGroup>
+</s:Panel>

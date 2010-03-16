@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/halo" xmlns:local="*" xmlns:control="ydk.epub.control.*">
+	<fx:Style source="epubmake.css"/>
+	<fx:Script>
+		<![CDATA[
+			import com.hurlant.crypto.prng.Random;
+			import com.hurlant.util.Hex;
+			
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.utils.UIDUtil;
+			
+			import ydk.epub.data.Opf;
+			import ydk.epub.maker.EpubBook;
+			
+			public function msgbox(title:String, msg:String):void{
+				Alert.show( msg, title, Alert.OK|Alert.NONMODAL, this);
+				
+			}
+			
+			private var _ebook : EpubBook;
+			private var _key : String; //hex aes512
+			private var _encryptStart : int = 3; // -1 no encryption, 0 full, 1 from 2nd chapter.
+			private var _xhtmlHeader:String = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"+
+				"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"zh-CN\">\n"+
+				"<head>\n"+
+				"<title>TITLE_TO_REPLACE</title>\n"+
+				"<meta http-equiv=\"Content-Type\" content="+
+				"\"application/xhtml+xml; charset=utf-8\" />\n"+
+				"</head>\n"+
+				"<body>\n<p>CONTENT_TO_REPLACE</p>\n"+
+				"</body>\n"+
+				"</html>\n";
+			
+			private var _coverpage:String = 
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>                                                           " 
+				+"                                                                                                      "
+				+"<!DOCTYPE html PUBLIC                                                                                 "
+				+"     \"-//W3C//DTD XHTML 1.1//EN\"                                                                    "
+				+"     \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">                                                "
+				+"                                                                                                      "
+				+"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">                                         "
+				+"                                                                                                      "
+				+"  <head>                                                                                              "
+				+"   <title>Cover</title>                                                                               "
+				+"   <meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml; charset=utf-8\"/>               "
+				+"  </head>                                                                                             "
+				+"                                                                                                      "
+				+"  <body>                                                                                              "
+				+"    <div style=\"text-align: center; page-break-after: always;\">                                     "
+				+"       <img src=\"images/b.jpg\" alt=\"Cover\" style=\"height: 100%; max-width: 100%;\" />        "
+				+"    </div>                                                                                            "
+				+"  </body>                                                                                             "
+				+"                                                                                                      "
+				+"</html>                                                                                               ";
+			private function text2xhtml(title:String, text:String):String{
+				var content:String = _xhtmlHeader.replace("TITLE_TO_REPLACE", title);
+				content = content.replace("CONTENT_TO_REPLACE", text);
+				trace("content xhtml="+content);
+				return content;
+				
+				
+			}
+			
+			private function setMetaData(book:EpubBook) : void{
+				var opf:Opf = book.opf;
+				opf.title = bookMetaData.book_title.text //"我的故事书";
+				opf.creator = bookMetaData.author_1.text; //"YDK developers";
+				if (bookMetaData.book_id.text.length == 0){
+					bookMetaData.book_id.text = UIDUtil.createUID();
+				}
+				opf.primaryID = bookMetaData.book_id.text; //"ydk-001-222";
+				opf.contributor = bookMetaData.author_2.text; //"Zhao Yu";
+				opf.coverage = ""; //"This is a test book for ydk epub";
+				opf.description = "";//"the book is only for test purpose";
+				opf.format = bookMetaData.book_format.text;//"format of book";
+				opf.language = "zh-CN";
+				opf.originalPublishDate = bookMetaData.book_original_publish_date.text;//"2010.3.11";
+				
+				opf.publishDate = publish_date_formater.format(new Date()); //"2009.1.1";
+				
+				opf.publisher = bookMetaData.book_publisher.text; //"中国无中生有出版社";
+				opf.relation = ""; //"book relation is unknow";
+				opf.rights = "阅读客版权所，2010";
+				opf.source = "由阅读客EPubMaker制作";
+//				opf.subject = "test";
+//				opf.subject = "novel";
+//				opf.subject = "life";
+//				opf.type = "text";
+				opf.uriID =  bookMetaData.book_id.text; //"uriid-000-000-0002";
+				
+				//---------ydk meta ---------- 
+				opf.bookName = bookMetaData.book_title.text ;
+				opf.bookId = bookMetaData.book_id.text; //"bookid-ydk-72738234";
+				opf.bookIsbn = bookMetaData.book_isbn.text; //"1111-222-222-222";
+
+				opf.author = bookMetaData.author_1.selectedIndex < 0 ? "" :  bookMetaData.author_1.selectedLabel;
+				opf.author = bookMetaData.author_2.selectedIndex < 0 ? "" :  bookMetaData.author_2.selectedLabel;
+				opf.author = bookMetaData.author_3.selectedIndex < 0 ? "" :  bookMetaData.author_3.selectedLabel;
+				opf.author = bookMetaData.author_4.selectedIndex < 0 ? "" :  bookMetaData.author_4.selectedLabel;
+				opf.author = bookMetaData.author_other.text;
+				opf.translator = bookMetaData.translator_1.selectedIndex < 0 ? "" :  bookMetaData.translator_1.selectedLabel;
+				opf.translator = bookMetaData.translator_2.selectedIndex < 0 ? "" :  bookMetaData.translator_2.selectedLabel;
+				opf.translator = bookMetaData.translator_3.selectedIndex < 0 ? "" :  bookMetaData.translator_3.selectedLabel;
+				opf.translator = bookMetaData.translator_4.selectedIndex < 0 ? "" :  bookMetaData.translator_4.selectedLabel;
+				opf.translator = bookMetaData.translator_other.text;
+//				opf.translator = "no translator2";
+//				opf.translator = "no translator3";
+				opf.bookLayout = bookMetaData.book_layout.text; //"精装本";
+				opf.bookFormat = bookMetaData.book_format.text; //"16K";
+				opf.bookPages = bookMetaData.book_pages.text; //"30页";
+				opf.paperCopyPrice = bookMetaData.book_paper_price.text; //"20.00CNY";
+				opf.introduction = bookMetaData.book_introduction.text;
+				
+//				_book.setEncryptKey("233dd241c167dd0a489671738ef3c0d7");
+				
+				if (setThumbnailImages(book, coverImageSelector.imgThumbnail3DBig, "image3db", "images/3db.jpg")){
+					opf.thumbnail3DBig = "images/3db.jpg"; 
+				}
+				//_book.addBinaryFile("image3ds", "images/3ds.jpg", coverImageSelector.imgThumbnail3DSmall.source as ByteArray, "image/jpg");
+//				opf.thumbnail3DSmall = "images/3ds.jpg";
+				if (setThumbnailImages(book, coverImageSelector.imgThumbnail3DSmall, "image3ds", "images/3ds.jpg")){
+					opf.thumbnail3DSmall = "images/3ds.jpg"; 
+				}
+
+				if (setThumbnailImages(book, coverImageSelector.imgThumbnailSmall, "images", "images/s.jpg")){
+					opf.thumbnailSmall = "images/s.jpg"; 
+				}
+				if (setThumbnailImages(book, coverImageSelector.imgThumbnailBig, "imageb", "images/b.jpg")){
+					opf.thumbnailBig = "images/b.jpg"; 
+					addCoverPage(book, "images/b.jpg", coverImageSelector.imgThumbnailBig.source as ByteArray);
+				}
+//				_book.addBinaryFile("imageb", "images/b.jpg", coverImageSelector.imgThumbnailBig.source as ByteArray, "image/jpg");
+//				opf.thumbnailBig = "images/b.jpg";
+//				_book.addBinaryFile("images", "images/s.jpg", coverImageSelector.imgThumbnailSmall.source as ByteArray, "image/jpg");
+//				opf.thumbnailSmall = "images/s.jpg";
+	
+			}
+			private function setThumbnailImages(book:EpubBook, image:Image, name:String, imageFn:String) :Boolean  {
+				var data:ByteArray;
+				if (image.source == null){
+					return false;
+				}
+				if (image.source is ByteArray){
+					trace("the image data is loaded");
+					data = image.source as ByteArray;
+					
+				}else if (image.source is String ){
+					trace ("image.data="+image.data );
+//					var loader:URLLoader = new URLLoader();
+//					loader.dataFormat = URLLoaderDataFormat.BINARY;
+//					var request:URLRequest = new URLRequest(image.source as String);
+//					loader.addEventListener(Event.COMPLETE, function (e:Event){
+//						//save the data here.
+//					});
+//					loader.load(request);
+				}
+				if (data != null){
+					book.addBinaryFile(name, imageFn, data, book.getMediaType(imageFn.substring(imageFn.lastIndexOf(".")+1)));
+				}
+				return data != null;
+				
+			}
+			private function generateAES(bits:int) :String{
+				var r:Random = new Random;
+				var b:ByteArray = new ByteArray();
+				r.nextBytes(b, bits/8);
+				var key:String = Hex.fromArray(b);
+				return key;
+			}
+			private function setEncrytionKey(book:EpubBook):void{
+				//generate a HEX format AES KEY;
+				_key = generateAES(128);
+				book.setEncryptKey(_key);
+				book_aes_key.text = _key;
+			}
+			private var _playOrder:int = 0;
+			private function addChaptersToBook(book:EpubBook):void{
+				var toc:XML = ncxParser.toc;
+				addChapters(toc.navMap.navPoint, null, book, 0);
+			}
+			private function addChapters(chapters:XMLList, parent:XML, book:EpubBook, level:int, encrypted:Boolean = false):void{
+				for (var i:int = 0; i < chapters.length(); i++){
+					var id:String = "content_"+(level+1)+"_"+ (i+1); 
+					var title:String = chapters[i].@title;
+					if (!encrypted){
+						if (level == 0 && _encryptStart >= 0 ){
+							if (i >= _encryptStart){
+								encrypted = true;
+							}
+						}
+					}
+					//var node:XML = book.addChapter(parent, id, title,text2xhtml( title, chapters[i].@content), id+".html", encrypted);
+					var node:XML = book.addChapter(parent, id, title, text2xhtml( title, chapters[i].@content), id+".xhtml", level, ++_playOrder, encrypted, "application/xhtml+xml");
+					//var node:XML = book.addChapter(parent, id, title, text2xhtml( title, chapters[i].@content), id+".txt", level, ++_playOrder, encrypted, "text/plain");
+					addChapters(chapters[i].navPoint, node, book, level+1);
+				}
+			}
+			public function createBook () : EpubBook{
+				var _book:EpubBook = new EpubBook(null);
+				var node:XML;
+				var opf:Opf = _book.opf;
+				//setMetaData
+				setMetaData(_book);
+				//setKey
+				setEncrytionKey(_book);
+				
+				
+				addChaptersToBook(_book);
+				
+				_book.complete();
+				return _book;
+			}
+ 			private function addCoverPage(book:EpubBook, imageName:String, coverImage:ByteArray) : void{
+				var str:String = _coverpage.replace("images/cover.png", imageName);
+				book.addCover(_coverpage, imageName, coverImage);
+				
+			}
+			private var  fr:FileReference;
+			protected function onSaveComplete (e:Event) : void
+			{
+				trace ("Zip File saved as: "+fr.name);
+			}
+			protected function onLoadProgress (e:ProgressEvent) : void
+			{
+				var file:FileReference = FileReference(e.target);
+				trace("onLoadProgress: name=" + file.name + " bytesLoaded=" + e.bytesLoaded + " bytesTotal=" + e.bytesTotal);
+			}
+			private function onLoadError(e:IOErrorEvent):void
+			{
+				trace ("loadfile error:"+e);
+			}
+			protected function saveEpub_clickHandler(event:MouseEvent):void
+			{
+
+				_ebook = createBook();
+				var data:ByteArray = new ByteArray();
+				_ebook.serialize(data);	
+
+				fr = new FileReference();
+				var fileFilter:FileFilter = new FileFilter("zip Files", "*.epub;*.zip");
+				
+				fr.addEventListener(Event.COMPLETE, onSaveComplete);
+				fr.addEventListener(ProgressEvent.PROGRESS, onLoadProgress);
+				fr.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				
+
+				fr.save(data, "testbook.epub");
+			}
+
+
+			protected function fullscreen_clickHandler(event:MouseEvent):void
+			{
+				if (fullscreen.selected){
+					stage.displayState = StageDisplayState.FULL_SCREEN;
+				}else{
+					stage.displayState = StageDisplayState.NORMAL;
+				}
+			}
+
+		]]>
+		
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<fx:XMLList id="treeData">
+			<node label="----Mail Box">
+				<node label="Inbox">
+					<node label="Marketing"/>
+					<node label="Product Management"/>
+					<node label="Personal"/>
+				</node>
+				<node label="Outbox">
+					<node label="Professional"/>
+					<node label="Personal"/>
+				</node>
+				<node label="Spam"/>
+				<node label="Sent"/>
+			</node>
+		</fx:XMLList>
+		<mx:DateFormatter id="publish_date_formater" formatString="YYYY.MM.DD L:N:S-Q A" />
+		
+	</fx:Declarations>
+	
+	<s:Panel title="阅读客电子书制作上传" 
+			 width="90%" height="90%" horizontalCenter="0" verticalCenter="0" minWidth="600" minHeight="500">
+		<s:VGroup left="10" right="10" top="10" bottom="10">
+			<mx:TabNavigator  id="tn" width="100%" height="100%">
+				<control:BookContentLoader panelProgress="{panelLoadProgress}" id="bookContentLoader" />
+				<control:NcxParser bookContent="{bookContentLoader}" chapterSelector="{chapterSelector}"  id="ncxParser" />
+				<control:CoverImageSelector id="coverImageSelector" />
+				<control:BookMetaData id="bookMetaData" panelTranslator="{panelTranslator}" panelAuthor="{panelAuthor}" panelPublisher="{panelPublisher}" />
+				<s:NavigatorContent label="电子书制作" width="100%" height="100%">
+					<s:Button x="201" y="156" label="保存" id="saveEpub" click="saveEpub_clickHandler(event)"/>
+					<s:TextInput x="109" y="53" width="414" id="book_aes_key" enabled="true"/>
+					<s:Label x="52" y="58" text="AES Key"/>
+				</s:NavigatorContent>
+			</mx:TabNavigator>
+		</s:VGroup>
+		
+	</s:Panel>
+	
+	
+	<control:TranslatorPanel id="panelTranslator" visible="false" />
+	<control:AuthorPanel id="panelAuthor" visible = "false" />
+	<control:PublisherPanel id="panelPublisher" visible="false" />
+	<control:ChapterParserSelector id="chapterSelector" visible="false" />	
+	<control:LoadProgress id="panelLoadProgress" visible="false" />
+	<s:CheckBox x="20" y="20" label="全屏" id="fullscreen" click="fullscreen_clickHandler(event)"/>
+	
+</s:Application>

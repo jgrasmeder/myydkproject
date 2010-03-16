@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/halo" 
+					label="内容编辑" width="100%" height="100%"
+					xmlns:local="*" xmlns:control="ydk.epub.control.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			private var _panelProgress:LoadProgress;
+			public function set panelProgress(bc:LoadProgress) : void {
+				_panelProgress = bc;
+			}
+			
+			private var fr:FileReference = new FileReference();
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// brower and select file;
+				
+				var fileFilter:FileFilter = new FileFilter("Books", "*.epub;*.pdf;*.txt");
+				fr = new FileReference();
+				fr.addEventListener(Event.SELECT, onSelectFile);
+				//fr.addEventListener(Event.CANCEL, onCancelBrowse);
+				fr.browse([fileFilter]);
+			}
+			protected function onSelectFile (e:Event) : void
+			{
+				//var fr:FileReference = e.target as FileReference;
+				bookfilepath.text = fr.name; 
+				
+				//listen for when the file has loaded
+				fr.addEventListener(Event.COMPLETE, onLoadComplete);
+				fr.addEventListener(ProgressEvent.PROGRESS, onLoadProgress);
+				fr.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				
+				
+				_panelProgress.title = "正在读取文件：" + fr.name;
+				_panelProgress.progressBarBookLoading.setProgress(0, 100);
+				_panelProgress.progressBarBookLoading.label = "已经读取 0 字节";
+				
+				_panelProgress.visible = true;
+//				_panelProgress.progressBarBookLoading.source = fr;
+				
+				//load the content of the file
+				fr.load();
+				
+			}
+			protected function onLoadProgress (e:ProgressEvent) : void
+			{
+				var file:FileReference = FileReference(e.target);
+				trace("onLoadProgress: name=" + file.name + " bytesLoaded=" + e.bytesLoaded + " bytesTotal=" + e.bytesTotal);
+				
+				var pos:Number = Math.round( e.bytesLoaded / e.bytesTotal * 100);
+				//loadingfiletext.text 
+				_panelProgress.progressBarBookLoading.label = "已经读取："+pos+"%  (" +e.bytesLoaded + " / " + e.bytesTotal +"字节)";
+				_panelProgress.progressBarBookLoading.setProgress(pos, 100);
+				
+				
+				
+			}
+			protected function onCancelBrowse (e:Event) : void
+			{
+				trace("cancel browser books");
+				
+			}
+			//called when the file has completed loading
+			private function onLoadComplete(e:Event):void
+			{
+				//var fr:FileReference = e.target as FileReference;
+				//get the data from the file as a ByteArray
+				var data:ByteArray = fr.data;
+				//msgbox(fr.name, "file size="+data.bytesAvailable);
+				//read the bytes of the file as a string and put it in the
+				//textarea
+				var code:String = bookEncoding.selectedItem.data;
+				if (code == "AUTO"){
+					//Alert.show("AUTO","AUTO");
+					var b1:uint
+					var b2:uint
+					data.position = 0;
+					b1 = data.readUnsignedByte(); 
+					data.position = 1;
+					b2 = data.readUnsignedByte();
+					data.position = 3; // EF BB E7
+					switch(true)
+					{
+						case (b1== 0xff &&b2==0xfe):
+							code = "unicode";
+							break;
+						case (b1==0xfe&&b2==0xff):
+							code = "unicodeFFFE";
+							break;
+						case (b1==0xef && b2==0xbb): //(-25, -84) EF BB E7
+							code = "UTF-8";
+							break;
+						default:
+							code = "ansi";
+							data.position = 0;
+							break;  
+					}
+					trace("code="+code);
+				}
+				//Alert.show("code="+code+"?");
+//				if (code == "UTF-8" || code == "utf-8"){
+//					data.position = 2;
+//				}
+				trace ("b1="+b1+" | b2="+b2);
+				trace("total:"+data.bytesAvailable+" | position:"+data.position);
+				bookcontentbox.text = data.readMultiByte(data.bytesAvailable, code);
+				//bookcontentbox.text = data.readUTFBytes(data.bytesAvailable);
+				
+				fr = null;
+				_panelProgress.visible = false;
+				
+			}
+			
+			//called if an error occurs while loading the file contents
+			private function onLoadError(e:IOErrorEvent):void
+			{
+				bookcontentbox.text = "打开文件错误 : " + e.text
+				_panelProgress.visible = false;
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup width="100%" height="100%">
+		<s:HGroup width="100%" height="23" textAlign="center">
+			<s:Label text="文件名（路径）" height="19" paddingTop="4" paddingLeft="3"/>
+			<s:TextInput width="202" id="bookfilepath" text="文本文件名" textAlign="left"/>
+			<control:EncodeComboBox id="bookEncoding" />
+			<s:Button label="选择文件" click="button1_clickHandler(event)"/>
+			<!--<mx:Spacer height="20" width="100%"/>
+			<s:Button label="保存修改"/>-->
+		</s:HGroup>
+		<s:TextArea id="bookcontentbox" width="100%" height="100%" styleName="bookcontentbox" editable="false" enabled="true" >
+		</s:TextArea>
+	</s:VGroup>
+
+</s:NavigatorContent>
+

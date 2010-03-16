@@ -1,0 +1,21 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/halo";
+
+
+s|RichEditableText
+{
+	border: 1px solid #000000 ;
+}
+
+global
+{
+}
+s|TextArea.bookcontentbox
+{
+	paddingBottom: 10;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 10;
+	border:1px solid #000000 ;
+}

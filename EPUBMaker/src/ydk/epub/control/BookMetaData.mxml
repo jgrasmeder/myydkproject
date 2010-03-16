@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/halo" 
+					label="书籍信息" width="100%" height="100%"
+					xmlns:local="*" xmlns:control="ydk.epub.control.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			private var _panelPublisher:PublisherPanel;
+			public function set panelPublisher(pp:PublisherPanel) : void {
+				_panelPublisher = pp;
+			}
+			
+			private var _panelAuthor:AuthorPanel;
+			public function set panelAuthor(pa:AuthorPanel) : void {
+				_panelAuthor = pa;
+			}
+			
+			private var _panelTranslator:TranslatorPanel;
+			public function set panelTranslator(pt:TranslatorPanel) : void {
+				_panelTranslator = pt;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup width="800"  height="100%" paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">
+		<s:HGroup width="100%" height="20">
+			<s:Label text="书名"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" minWidth="100" maxWidth="600" id="book_title" text="bookname"/>
+			<mx:Spacer width="30" height="20"/>
+			<s:Label text="书籍ID"  width="50" paddingLeft="10" paddingTop="5" height="20"  />
+			<s:TextInput height="20" width="200" id="book_id" enabled="false"/>
+			
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:Label text="出版社"  width="60"  paddingLeft="10" paddingTop="5" height="20"/>
+			<control:PublisherComboBox id="book_publisher" /> 
+			<s:Button height="20" id="btnAddPublisher" label="添加出版社" click="_panelPublisher.onOpen(event)"/>
+			<mx:Spacer width="30" height="20"/>
+			<s:Label text="ISBN"  width="50"  paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="200" id="book_isbn" text="111-111-111-111"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:Label text="作者"  width="60"  paddingLeft="10" paddingTop="5" height="20"/>
+			<control:AuthorComboBox id="author_1" />
+			<control:AuthorComboBox id="author_2" />
+			<control:AuthorComboBox id="author_3" />
+			<control:AuthorComboBox id="author_4" />
+			<s:TextInput height="20" maxWidth="120" id="author_other"/>
+			<s:Button label="添加作者" height="20" id="btnAddAuthor"  click="_panelAuthor.onOpen(event)" />
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			<s:Label text="译者"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<control:AuthorComboBox id="translator_1" />
+			<control:AuthorComboBox id="translator_2" />
+			<control:AuthorComboBox id="translator_3" />
+			<control:AuthorComboBox id="translator_4" />
+			<s:TextInput height="20" maxWidth="120" id="translator_other"/>
+			<s:Button label="添加译者" height="20" id="btnAddTranslator" click="_panelTranslator.onOpen(event)"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="100%">
+			<s:VGroup width="200" height="100%">
+				<s:HGroup width="200" height="20">
+					<s:Label text="出版日期"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+					<s:TextInput height="20" width="100%" maxWidth="300" id="book_original_publish_date" text="2009.3.13"/>
+				</s:HGroup>
+				<s:HGroup width="200" height="20">
+					<s:Label text="开本"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+					<s:TextInput height="20" width="100%" maxWidth="300" id="book_format" text="16K"/>
+				</s:HGroup>
+				<s:HGroup width="200" height="20">
+					<s:Label text="装帧"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+					<s:TextInput height="20" width="100%" maxWidth="300" id="book_layout" text="good"/>
+				</s:HGroup>
+				<s:HGroup width="200" height="20">
+					<s:Label text="页数"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+					<s:TextInput height="20" width="100%" maxWidth="300" id="book_pages" text="10"/>
+				</s:HGroup>
+				<s:HGroup width="200" height="20">
+					<s:Label text="价格"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+					<s:TextInput height="20" width="100%" maxWidth="300" id="book_paper_price" text="20.00"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:Panel width="100%" height="100%" title="书籍简介">
+				<s:TextArea editable="true" enabled="true" width="100%" height="100%" id="book_introduction" text="book introduction"/>
+			</s:Panel>
+		</s:HGroup>
+	</s:VGroup>
+</s:NavigatorContent>

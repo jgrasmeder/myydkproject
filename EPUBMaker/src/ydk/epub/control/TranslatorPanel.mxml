@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/halo" 
+		 
+		 horizontalCenter="0" verticalCenter="0" width="320" height="420" title="译者信息"
+		 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script >
+		<![CDATA[
+			public function onOpen(event:Event) : void{
+				this.visible = true;
+			}
+			private function onOK(event:Event) : void{
+				this.visible = false;
+			}
+			private function onCancel(event:Event) : void{
+				this.visible = false;	
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup left="10" top="10" right="10" bottom="10">
+		
+		<s:HGroup width="100%" height="20">
+			
+			<s:Label text="姓名"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			
+			<s:Label text="国籍"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="20">
+			
+			<s:Label text="性别"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextInput height="20" width="100%" maxWidth="300"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="100%">
+			
+			<s:Label text="译者简介"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
+			<s:TextArea editable="true" enabled="true" width="100%" height="100%"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="30" verticalAlign="middle" textAlign="center" paddingLeft="0" paddingRight="0">
+			<mx:Spacer width="100%" height="20"/>
+			<s:Button label="确定" click="onOK(event)"/>
+			<mx:Spacer width="20" height="20"/>
+			<s:Button label="取消" click="onCancel(event)"/>
+			<mx:Spacer  width="100%" height="20" />
+		</s:HGroup>
+	</s:VGroup>
+</s:Panel>

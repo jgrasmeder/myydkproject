@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/halo"
+					label="封面图片" width="100%" height="100%"
+					>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script >
+		<![CDATA[
+			
+			private var frImage:FileReference;
+			private var curImg:Image;
+			
+			protected function loadImage(event:MouseEvent):void
+			{
+				curImg = event.currentTarget as Image;
+				frImage = new FileReference();
+				var imgFilter:FileFilter = new FileFilter("Images", "*.jpg;*.gif;*.png");
+				
+				frImage.addEventListener(Event.SELECT, function (e:Event):void {
+					
+					frImage.addEventListener(Event.COMPLETE, function (e:Event):void{
+						if (curImg != null) {
+							//msgbox(curImg.id+" =" +frImage.name, ObjectUtil.toString(frImage));
+							curImg.source = frImage.data;
+						}
+						//curImg = null;
+						frImage = null;
+					});
+					frImage.addEventListener(IOErrorEvent.IO_ERROR,  function (e:IOErrorEvent):void{
+						trace("load image failed:"+frImage.name);
+						frImage = null;
+						
+					});
+					frImage.load();
+				});
+				frImage.browse([imgFilter]);
+			}
+			[Embed (source="../images/big.JPG" )]
+			public static const defaultBig:Class;
+
+			[Embed (source="../images/small.jpg" )]
+			public static const defaultSmall:Class;
+
+			[Embed (source="../images/big3d.jpg" )]
+			public static const default3DBig:Class;
+
+			[Embed (source="../images/small3d.jpg" )]
+			public static const default3DSmall:Class;
+
+		]]>
+	</fx:Script>
+	<s:VGroup left="10" top="10" right="10" bottom="10" minWidth="400" maxWidth="600" minHeight="400" maxHeight="800">
+		<s:HGroup width="100%" height="100%">
+			<s:Panel width="200" height="100%" id="Thumbnail_big" title="封面图片（大）" toolTip="点击图片选择不同的图片">
+				<mx:Image id="imgThumbnailBig" 
+						  maxWidth="300"
+						  maxHeight="300" click="loadImage(event)" source="{defaultBig}" horizontalCenter="0" verticalCenter="0"/>
+			</s:Panel>
+			<mx:Spacer width="100%" maxWidth="10" height="100%"/>
+			<s:Panel width="200" height="100%" id="Thumbnail_small" title="封面图片（小）"  toolTip="点击图片选择不同的图片">
+				<mx:Image id="imgThumbnailSmall"  verticalCenter="0"
+						  horizontalCenter="0"
+						  maxWidth="300"
+						  maxHeight="300" click="loadImage(event)" source="{defaultSmall}" />
+			</s:Panel>
+		</s:HGroup>
+		<s:HGroup width="100%" height="100%">
+			<s:Panel width="200" height="100%" id="Thumbnail_3D_big" title="立体图片（大）"  toolTip="点击图片选择不同的图片">
+				<mx:Image id="imgThumbnail3DBig"  verticalCenter="0"
+						  horizontalCenter="0"
+						  maxWidth="300"
+						  maxHeight="300" click="loadImage(event)" source="{default3DBig}"/>
+			</s:Panel>
+			<mx:Spacer width="100%" maxWidth="10" height="100%"/>
+			<s:Panel width="200" height="100%" id="Thumbnail_3D_small" title="立体图片（小）"  toolTip="点击图片选择不同的图片">
+				<mx:Image id="imgThumbnail3DSmall"  verticalCenter="0"
+						  horizontalCenter="0"
+						  maxWidth="300"
+						  maxHeight="300" click="loadImage(event)"  source="{default3DSmall}"/>
+			</s:Panel>
+		</s:HGroup>
+	</s:VGroup>
+</s:NavigatorContent>
