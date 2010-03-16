@@ -183,7 +183,7 @@ public class Book {
 		//bookUUID
 		
 	}
-	private void parseNcx() throws IOException, JDOMException{
+	private void parseNcx() throws Exception{
 		_ncx = new Ncx(_epubFile);
 	}
 
