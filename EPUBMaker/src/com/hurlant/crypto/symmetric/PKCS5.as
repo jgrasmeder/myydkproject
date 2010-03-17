@@ -34,6 +34,7 @@ package com.hurlant.crypto.symmetric
 				if (c!=v) throw new Error("PKCS#5:unpad: Invalid padding value. expected ["+c+"], found ["+v+"]");
 			}
 			// that is all.
+						
 		}
 
 		public function setBlockSize(bs:uint):void {
