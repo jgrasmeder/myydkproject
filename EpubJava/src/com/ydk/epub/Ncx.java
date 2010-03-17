@@ -1,9 +1,7 @@
 package com.ydk.epub;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,7 +73,7 @@ public class Ncx {
 		
 		Element root = doc.getRootElement();
 		//System.out.println(root.toString());
-		Namespace ns = root.getNamespace();
+//		Namespace ns = root.getNamespace();
 //		Namespace ds = root.getNamespace("ds");
 		Namespace enc = root.getNamespace("enc");
 //		List xl = root.getChildren("EncryptedData");
