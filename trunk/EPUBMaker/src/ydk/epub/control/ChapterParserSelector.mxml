@@ -27,6 +27,8 @@
 	<fx:Script >
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			private var _parser:NcxParser;
+			
 			[Bindable]	public var chapterParserString :ArrayCollection = new ArrayCollection
 				(
 					[
@@ -41,6 +43,17 @@
 						
 					]
 				)
+
+			public function get parser():NcxParser
+			{
+				return _parser;
+			}
+
+			public function set parser(value:NcxParser):void
+			{
+				_parser = value;
+			}
+
 			protected function switchChapterLevel_1(event:MouseEvent):void
 			{
 				if (isChapterLevel_1.selected == true){
@@ -112,6 +125,10 @@
 			protected function onOK(event:MouseEvent):void
 			{
 				this.visible = false;
+				if (parser != null){
+					
+					parser.generateNCX(null);
+				}
 			}
 			
 			protected function onCancel(event:MouseEvent):void
