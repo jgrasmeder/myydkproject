@@ -3,13 +3,22 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/halo" 
 					
-					label="目录编辑" width="100%" height="100%" xmlns:local="*">
+					label="目录编辑" width="100%" height="100%" xmlns:local="*" xmlns:controls="it.sephiroth.controls.*">
+
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+				
 	</fx:Declarations>
+	
+
 	<fx:Script >
 		<![CDATA[
+			
 			import mx.controls.TextArea;
+			
+			
+			
+			
 			
 			[Bindable]
 			public var selectedNode:XML;
@@ -39,19 +48,23 @@
 			
 			// Event handler for the Tree control change event.
 			public function treeChanged(evt:Event):void {
-				selectedNode = Tree(evt.target).selectedItem as XML;
+				selectedNode = TreeCheckBox(evt.target).selectedItem as XML;
 			}
 			
 			
-			protected function generateNCX(event:MouseEvent):void
+			public function generateNCX(event:MouseEvent):void
 			{
 					clearNCX();
 					setRegex();
 					splitContent(null, _bookContent.bookcontentbox.text, 0);
 					treeNcx.dataProvider = ncx;
-				}
+					treeNcx.validateNow();
+					treeNcx.expandChildrenOf(treeNcx.getChildAt(0), true);
 				
-				
+					
+					var firstItem:XML = ncx..navMap[0];
+					treeNcx.validateNow();
+					treeNcx.expandItem(firstItem, true);
 			}
 			
 			private function splitContent(parent:XML, original:String, level:int):void {
@@ -114,6 +127,7 @@
 					node = new XML(<navPoint />);
 					node.@title = chapters[i-1];
 					node.@content="+++---+++";
+					node.@checked = 0;
 					parent.appendChild(node);
 					splitContent(node, contents[i],level+1);
 					
@@ -152,18 +166,83 @@
 			public function get toc () : XML{
 				return ncx;
 			}
+			
+			import mx.events.TreeEvent;
+			import it.sephiroth.renderers.TreecheckboxItemRenderer;
+			
+			/**
+			 * Called on checkbox click
+			 * check and update for both parents and child nodes
+			 * according to the checkbox status
+			 */
+			private function onItemCheck( event: TreeEvent ): void
+			{
+				updateParents( event.item as XML, ( event.itemRenderer as TreecheckboxItemRenderer ).checkBox.checkState );
+				updateChilds( event.item as XML, ( event.itemRenderer as TreecheckboxItemRenderer ).checkBox.checkState );
+			
+
+			}
+			
+			/**
+			 * @see it.sephiroth.controls.CheckBoxExtended#checkState
+			 * 
+			 */
+			private function updateChilds( item:XML, value: uint ):void
+			{
+				var middle: Boolean = ( value & 2 << 1 ) == ( 2 << 1 );
+				var selected: Boolean = ( value & 1 << 1 ) == ( 1 << 1 );
+				
+				if( item.children( ).length( ) > 0 && !middle )
+				{
+					for each(var x: XML in item.navPoint )
+					{
+						x.@checked = value == ( 1 << 1 | 2 << 1 ) ? "2" : value == ( 1 << 1 ) ? "1" : "0";
+						updateChilds( x, value );
+					}
+				}
+			}
+			
+			private function updateParents( item: XML, value: uint ): void
+			{
+				var checkValue: String = ( value == ( 1 << 1 | 2 << 1 ) ? "2" : value == ( 1 << 1 ) ? "1" : "0" );
+				var parentNode: XML = item.parent( );
+				if( parentNode )
+				{
+					for each(var x: XML in parentNode.navPoint )
+					{
+						if( x.@checked != checkValue )
+						{
+							checkValue = "2"
+						}
+					}
+					parentNode.@checked = checkValue;
+					updateParents( parentNode, value );
+				}
+			}
 		]]>
 	</fx:Script>
 	
 	<s:VGroup width="100%" height="100%">
 		<s:HGroup width="100%" height="20">
 			<mx:Spacer width="5" height="20"/>
-			<s:Button label="选择章节名称" click="_chapterSelector.Open(event)"/>
-			<s:Button label="自动生成目录" click="generateNCX(event)"/>
+			<s:Button label="选择章节生成目录" click="_chapterSelector.Open(event)"/>
+			
 		</s:HGroup>
 		<mx:HDividedBox width="100%" height="100%">
-			<mx:Tree id="treeNcx" width="50%" height="100%" labelField="@label" labelFunction="treeLabel"
-					 showRoot="false" dataProvider="{ncx}" change="treeChanged(event);"/>
+			<controls:TreeCheckBox 
+				id="treeNcx" 
+				width="50%" 
+				height="100%" 
+				labelField="@label" 
+				labelFunction="treeLabel"
+				showRoot="false" 
+				dataProvider="{ncx}" 
+				change="treeChanged(event);"
+				
+				openItems="{ncx..navPoint}"
+				checkField="@checked"
+				itemCheck="onItemCheck( event )"
+				/>
 			<s:TextArea height="100%" width="50%"
 						text="{selectedNode.@content}" editable="false"/>
 		</mx:HDividedBox>

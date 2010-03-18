@@ -3,6 +3,9 @@ package ydk.epub.maker
 	import com.hurlant.crypto.*;
 	import com.hurlant.crypto.symmetric.ICipher;
 	import com.hurlant.crypto.symmetric.IPad;
+	import com.hurlant.crypto.symmetric.IVMode;
+	import com.hurlant.crypto.symmetric.IMode;
+
 	import com.hurlant.crypto.symmetric.PKCS5;
 	import com.hurlant.util.Base64;
 	import com.hurlant.util.Hex;
@@ -56,6 +59,7 @@ package ydk.epub.maker
 		private var _zip:ZipFile = new ZipFile("epub"); 
 		
 		private var _encryptKey:String;
+		private var _encryptIV:String;
 //		private var _signature:String;
 //		private var _rights:String;
 //		private var _contents:Array = new Array();
@@ -171,12 +175,29 @@ package ydk.epub.maker
 			_encryptKey = key;
 			var pad:IPad = new PKCS5();
 			var kdata:ByteArray = Hex.toArray(key);//Base64.decodeToByteArray(key); 
-			_mode = Crypto.getCipher("aes", kdata, pad);
-			trace (_mode);
+			_mode = Crypto.getCipher("aes-cbc", kdata, pad);
+			trace ("mode="+_mode);
+			
 			pad.setBlockSize(_mode.getBlockSize());
 			
 			_encryption.addKey("EK", "YDK KEY", "");
 			
+			
+		}
+		public function get encryptIV () : String {
+			if (_mode is IVMode) {
+				var ivmode:IVMode = _mode as IVMode;
+				_encryptIV = Hex.fromArray(ivmode.IV);
+			}
+			return _encryptIV;
+		}
+		
+		public function set encryptIV (iv:String) :void {
+			_encryptIV = iv;
+			if (_mode is IVMode) {
+				var ivmode:IVMode = _mode as IVMode;
+				ivmode.IV = Hex.toArray(iv);
+			}
 		}
 		
 		
@@ -223,7 +244,11 @@ package ydk.epub.maker
 			}else{
 				var buf:ByteArray = new ByteArray();
 				buf.writeUTFBytes(content);
+				if (encryptIV.length != 0){
+					encryptIV = encryptIV;
+				}
 				_mode.encrypt(buf);
+				trace ("IV="+encryptIV)
 				return Base64.encodeByteArray(buf);
 			}
 		}

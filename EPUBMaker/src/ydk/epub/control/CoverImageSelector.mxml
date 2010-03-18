@@ -54,7 +54,7 @@
 	</fx:Script>
 	<s:VGroup left="10" top="10" right="10" bottom="10" minWidth="400" maxWidth="600" minHeight="400" maxHeight="800">
 		<s:HGroup width="100%" height="100%">
-			<s:Panel width="200" height="100%" id="Thumbnail_big" title="封面图片（大）" toolTip="点击图片选择不同的图片">
+			<s:Panel width="300" height="100%" id="Thumbnail_big" title="封面图片（大）" toolTip="点击图片选择不同的图片">
 				<mx:Image id="imgThumbnailBig" 
 						  maxWidth="300"
 						  maxHeight="300" click="loadImage(event)" source="{defaultBig}" horizontalCenter="0" verticalCenter="0"/>
@@ -66,9 +66,7 @@
 						  maxWidth="300"
 						  maxHeight="300" click="loadImage(event)" source="{defaultSmall}" />
 			</s:Panel>
-		</s:HGroup>
-		<s:HGroup width="100%" height="100%">
-			<s:Panel width="200" height="100%" id="Thumbnail_3D_big" title="立体图片（大）"  toolTip="点击图片选择不同的图片">
+			<s:Panel width="300" height="100%" id="Thumbnail_3D_big" title="立体图片（大）"  toolTip="点击图片选择不同的图片">
 				<mx:Image id="imgThumbnail3DBig"  verticalCenter="0"
 						  horizontalCenter="0"
 						  maxWidth="300"
@@ -82,5 +80,6 @@
 						  maxHeight="300" click="loadImage(event)"  source="{default3DSmall}"/>
 			</s:Panel>
 		</s:HGroup>
+		
 	</s:VGroup>
 </s:NavigatorContent>

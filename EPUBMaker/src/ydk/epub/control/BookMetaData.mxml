@@ -30,18 +30,11 @@
 		<s:HGroup width="100%" height="20">
 			<s:Label text="书名"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
 			<s:TextInput height="20" width="100%" minWidth="100" maxWidth="600" id="book_title" text="bookname"/>
-			<mx:Spacer width="30" height="20"/>
-			<s:Label text="书籍ID"  width="50" paddingLeft="10" paddingTop="5" height="20"  />
-			<s:TextInput height="20" width="200" id="book_id" enabled="false"/>
-			
 		</s:HGroup>
 		<s:HGroup width="100%" height="20">
 			<s:Label text="出版社"  width="60"  paddingLeft="10" paddingTop="5" height="20"/>
-			<control:PublisherComboBox id="book_publisher" /> 
+			<control:PublisherComboBox id="book_publisher" width="100%" /> 
 			<s:Button height="20" id="btnAddPublisher" label="添加出版社" click="_panelPublisher.onOpen(event)"/>
-			<mx:Spacer width="30" height="20"/>
-			<s:Label text="ISBN"  width="50"  paddingLeft="10" paddingTop="5" height="20"/>
-			<s:TextInput height="20" width="200" id="book_isbn" text="111-111-111-111"/>
 		</s:HGroup>
 		<s:HGroup width="100%" height="20">
 			<s:Label text="作者"  width="60"  paddingLeft="10" paddingTop="5" height="20"/>
@@ -63,6 +56,10 @@
 		</s:HGroup>
 		<s:HGroup width="100%" height="100%">
 			<s:VGroup width="200" height="100%">
+				<s:HGroup width="200" height="20">
+					<s:Label text="ISBN"  width="60"  paddingLeft="10" paddingTop="5" height="20"/>
+					<s:TextInput height="20" width="100%" maxWidth="300" id="book_isbn" text="111-111-111-111"/>
+				</s:HGroup>
 				<s:HGroup width="200" height="20">
 					<s:Label text="出版日期"  width="60" paddingLeft="10" paddingTop="5" height="20"/>
 					<s:TextInput height="20" width="100%" maxWidth="300" id="book_original_publish_date" text="2009.3.13"/>
