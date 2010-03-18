@@ -43,8 +43,8 @@ public class TestBook extends TestCase {
 //	}
 
 	public void testToString() throws Exception {
-		String key = "bb864691ebc40d4a93897669268b619c";
-		_book = new Book("xiaoyanzi.epub");
+		String key = "c969ac4e08e1cbac411b00489844baee6dffa8db77b2b53b1e88323186cf0981668bb6e99fafafc42afc1c58a2c47110";
+		_book = new Book("testbook.epub");
 		//_book.parseMetadata();
 		System.out.println(_book.toString());
 		Image img = _book.getThumbnail3DBig();
