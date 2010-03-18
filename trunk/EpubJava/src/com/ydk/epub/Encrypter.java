@@ -19,7 +19,7 @@ import sun.misc.BASE64Encoder;
 
 
 public class Encrypter {
-	private static final Logger log = Logger.getLogger(SearchEngine.class.getName());
+	private static final Logger log = Logger.getLogger(Encrypter.class.getName());
 	
 	//given key is HEX 
 	//data is utf-8 BASE64 encoded;
