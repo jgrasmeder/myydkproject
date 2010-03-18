@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -15,6 +16,7 @@ import org.jdom.input.SAXBuilder;
 
 @SuppressWarnings("unchecked")
 public class Ncx {
+	private static final Logger log = Logger.getLogger(Ncx.class.getName());
 	//this is for NCX
 	private ZipFile _epubFile;
 	private String NCX = "OEBPS/toc.ncx";

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -22,7 +23,7 @@ import org.jdom.input.SAXBuilder;
     </navPoint>
  */
 public class TocItem {
-	
+	private static final Logger log = Logger.getLogger(TocItem.class.getName());
 	private ZipFile _epubbook;
 	private String title;
 	private String url;
@@ -52,7 +53,7 @@ public class TocItem {
 		chapterClass = e.getAttributeValue("class");
 		
 		
-		List<Element> l = e.getChildren("navPoint");
+		List<Element> l = e.getChildren("navPoint", ns);
 		if (l != null){
 			Iterator<Element> iter = l.iterator();
 			while (iter.hasNext()){

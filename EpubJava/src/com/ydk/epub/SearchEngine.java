@@ -151,8 +151,8 @@ public class SearchEngine {
 			TopDocs docs = indexSearcher.search(query, MAX_RESULT_NUMBER);
 			log.info("got "+docs.totalHits+" hits");			  
             for(ScoreDoc sd : docs.scoreDocs) { 
-            	log.info("key: "+indexSearcher.doc(sd.doc).get("key")+" score: "+sd.score);
-            	books.add(indexSearcher.doc(sd.doc).get("key"));                 
+            	log.info("title: "+indexSearcher.doc(sd.doc).get("title")+" score: "+sd.score);
+            	books.add(indexSearcher.doc(sd.doc).get("bookid"));                 
             }  
 		} catch (ParseException e) {
 			log.log(Level.WARNING, "search book ParseException: "+keywords+" fields: "+fields);
